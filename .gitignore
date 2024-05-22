@@ -1,0 +1,9 @@
+.idea
+examples
+logs
+lib
+
+.venv
+venv
+
+*.drawio.bkp

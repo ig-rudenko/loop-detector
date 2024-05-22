@@ -1,0 +1,49 @@
+import {createApp} from 'vue';
+import {Router} from "vue-router";
+import PrimeVue from 'primevue/config';
+import ToastService from 'primevue/toastservice';
+import Button from "primevue/button";
+import Column from "primevue/column";
+import DataTable from 'primevue/datatable';
+import IconField from "primevue/iconfield";
+import Image from "primevue/image";
+import InputIcon from "primevue/inputicon";
+import InputText from "primevue/inputtext";
+import Sidebar from "primevue/sidebar";
+import Splitter from "primevue/splitter";
+import SplitterPanel from "primevue/splitterpanel";
+import Tooltip from 'primevue/tooltip';
+
+// import "primevue/resources/themes/tailwind-light/theme.css";  // свежий
+// import "primevue/resources/themes/soho-light/theme.css";  // скругленный
+import "primevue/resources/themes/fluent-light/theme.css"; // строгий
+// import "primevue/resources/themes/aura-dark-noir/theme.css";
+import "./assets/styles.min.css";
+import 'primeicons/primeicons.css'
+
+import App from '@/App.vue';
+import store from "@/store";
+import setupInterceptors from '@/services/setupInterceptors';
+import router from "@/router";
+
+setupInterceptors(store);
+const app = createApp(App);
+app.use(PrimeVue, { ripple: true });
+app.use(ToastService);
+app.directive('tooltip', Tooltip);
+app.use(store);
+app.use(router);
+app.config.globalProperties.$router = router as Router;
+
+app.component("Button", Button);
+app.component("Column", Column);
+app.component("DataTable", DataTable);
+app.component("IconField", IconField);
+app.component("Image", Image);
+app.component("InputIcon", InputIcon);
+app.component("InputText", InputText);
+app.component("Sidebar", Sidebar);
+app.component("Splitter", Splitter);
+app.component("SplitterPanel", SplitterPanel);
+
+app.mount('#app');
