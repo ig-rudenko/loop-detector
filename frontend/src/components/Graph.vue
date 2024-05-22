@@ -14,8 +14,11 @@
   </Splitter>
 
 <!--EMPTY-->
-  <div v-else>
-    Нет графа
+  <div v-else class="flex justify-content-center">
+    <div>
+      <h1 class="text-center">Нет петель на сети!</h1>
+<!--      <img src="/img/graph-icon.png"/>-->
+    </div>
   </div>
 
 </template>

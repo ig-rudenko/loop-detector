@@ -13,6 +13,12 @@ export default defineComponent({
   name: "LoopGraph",
   components: {Graph, Menu},
 
+  mounted() {
+    document.title = "Ecstasy-Loop"
+    // const body: HTMLBodyElement = document.getElementsByTagName("body")[0];
+    // body.classList.add('body-back-image')
+  },
+
   computed: {
     graphData(): GraphData {
       return GraphService.getGraph();
@@ -22,8 +28,5 @@ export default defineComponent({
 })
 </script>
 
-<style>
-body {
-  background-image: none;
-}
+<style scoped>
 </style>

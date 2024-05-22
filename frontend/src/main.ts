@@ -16,9 +16,10 @@ import Splitter from "primevue/splitter";
 import SplitterPanel from "primevue/splitterpanel";
 import Tooltip from 'primevue/tooltip';
 
-// import "primevue/resources/themes/tailwind-light/theme.css";  // свежий
-import "primevue/resources/themes/soho-light/theme.css"; // скругленный
+// import "primevue/resources/themes/tailwind-light/theme.css"; // свежий
+// import "primevue/resources/themes/soho-light/theme.css"; // скругленный
 // import "primevue/resources/themes/fluent-light/theme.css"; // строгий
+import "primevue/resources/themes/aura-light-noir/theme.css";
 // import "primevue/resources/themes/aura-dark-noir/theme.css";
 import "@/../public/styles.min.css";
 import "@/../public/fonts/inglobal/inglobal.css";

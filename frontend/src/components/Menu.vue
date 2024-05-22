@@ -36,8 +36,8 @@ export default defineComponent({
       </div>
 
     <div class="flex justify-content-end gap-2">
-      <Button type="button" severity="primary" label="Остаться" @click="logoutDialogVisible = false"></Button>
-      <Button type="button" severity="danger" label="Выйти" @click="performLogout"></Button>
+      <Button type="button" severity="primary" outlined label="Остаться" @click="logoutDialogVisible = false"></Button>
+      <Button type="button" severity="danger" outlined label="Выйти" @click="performLogout"></Button>
     </div>
   </Dialog>
 

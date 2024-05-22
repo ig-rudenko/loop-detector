@@ -29,7 +29,7 @@ export default defineComponent({
     ...mapActions("auth", ["login"]),
 
     getClassesFor(isValid: boolean): string[] {
-      return isValid ? ['w-full', 'pb-3', 'bg-white-alpha-90'] : ['w-full', 'pb-3', 'p-invalid']
+      return isValid ? ['w-full', 'pb-3', 'bg-white-alpha-90',] : ['w-full', 'pb-3', 'p-invalid']
     },
 
     handleLogin() {
@@ -56,7 +56,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="bg-white-alpha-80 p-5 flex flex-wrap justify-content-center align-items-center border-round">
+  <div class="bg-white-alpha-40 p-5 flex flex-wrap justify-content-center align-items-center border-round">
 
 <!--    <div class="px-4">-->
 <!--      <img src="/img/logo.jpg" alt="Image" height="512" class="mb-2 image-logo" />-->
@@ -67,7 +67,7 @@ export default defineComponent({
         <div class="text-900 text-3xl font-medium mb-3 flex flex-wrap justify-content-center">
           <div>Пожалуйста, войдите в </div>
           <div class="flex align-items-center justify-content-center gap-2">
-            <img src="/img/ecstasy-logo.png" alt="Image" height="32" class="mb-2 pi-spin" />
+<!--            <img src="/img/ecstasy-logo.png" alt="Image" height="32" class="mb-2 pi-spin" />-->
             <div class="pb-2">Ecstasy-Loop</div>
           </div>
         </div>
@@ -92,7 +92,7 @@ export default defineComponent({
           <a class="font-medium no-underline ml-2 text-black text-right cursor-pointer">Forgot password?</a>
         </div>
 
-        <Button label="Sign In" icon="pi pi-user" severity="info" @click="handleLogin" class="w-full"></Button>
+        <Button label="Sign In" icon="pi pi-user" outlined severity="contrast" @click="handleLogin" class="w-full"></Button>
       </div>
     </div>
   </div>
@@ -104,10 +104,6 @@ export default defineComponent({
   .image-logo {
     height: 300px!important;
   }
-}
-
-.hover-opacity-100:hover {
-  opacity: 1.0!important;
 }
 
 </style>
