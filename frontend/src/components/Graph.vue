@@ -1,5 +1,5 @@
 <template>
-  <Splitter style="height:800px">
+  <Splitter v-if="graphData.nodes?.length" style="height:800px">
     <SplitterPanel class="flex align-items-center justify-content-center">
       <div id="net" style="height: 800px; width: 100%"></div>
     </SplitterPanel>
@@ -13,21 +13,29 @@
 
   </Splitter>
 
+<!--EMPTY-->
+  <div v-else>
+    Нет графа
+  </div>
+
 </template>
 
 <script lang="ts">
 import 'vis-network/styles/vis-network.min.css';
 
-import {defineComponent} from "vue";
+import {defineComponent, PropType} from "vue";
 import {Network} from "vis-network";
 import {Options} from "vis-network/declarations/network/Network";
 import GraphImage from "@/components/GraphImage.vue";
-import {EdgeData, GraphData, GraphService, Message} from "@/services/graph";
+import {EdgeData, GraphData, Message} from "@/services/graph";
 import MessagesTable from "@/components/MessagesTable.vue";
 
 export default defineComponent({
   name: "Graph",
   components: {MessagesTable, GraphImage},
+  props: {
+    graphData: {required: true, type: Object as PropType<GraphData>}
+  },
   data() {
     return {
       network: null as Network | null,
@@ -40,21 +48,22 @@ export default defineComponent({
     }
   },
   mounted() {
-    let container: HTMLElement = document.getElementById('net')!;
-    let data: GraphData = GraphService.getGraph();
+    if (!this.graphData.nodes?.length) return;
 
-    data.nodes!.forEach(item => {
+    let container: HTMLElement = document.getElementById('net')!;
+
+    this.graphData.nodes!.forEach(item => {
       item.title = this.htmlTitle((<string>item.title));
       this.nodes.set(item.id, item);
     });
 
-    data.edges!.forEach((item: EdgeData) => {
+    this.graphData.edges!.forEach((item: EdgeData) => {
       item.title = this.htmlTitle((<string>item.title));
       this.formatMessages(item.messages);
       this.edges.set(item.id, item)
     });
 
-    this.selectedEdge = (<EdgeData[]>data.edges!)[0]
+    this.selectedEdge = (<EdgeData[]>this.graphData.edges!)[0]
 
     let options: Options = {
       interaction: {
@@ -72,7 +81,7 @@ export default defineComponent({
       }
     };
 
-    this.network = new Network(container, data, options);
+    this.network = new Network(container, this.graphData, options);
     this.network.on("click", this.onNetworkClick);
   },
 
