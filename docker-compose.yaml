@@ -1,0 +1,64 @@
+version: "3.11"
+
+services:
+
+  nginx:
+    build: frontend
+    image: ecstasy-loop-nginx:0.1
+    restart: on-failure
+    hostname: nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - "./settings/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro"
+    depends_on:
+      - api-1
+    networks:
+      - ecstasy-loop-public-network
+
+  api-1:
+    build: web_app
+    image: ecstasy-loop-api:0.1
+    restart: on-failure
+    hostname: api-1
+    env_file:
+      - "settings/env/api.env"
+    volumes:
+      - "./loop_storage:/app/loop_storage"
+    depends_on:
+      - redis
+    networks:
+      - ecstasy-loop-public-network
+      - ecstasy-loop-internal-network
+
+  redis:
+    image: redis:7.2.5-alpine
+    networks:
+      - ecstasy-loop-internal-network
+
+  graph_gen:
+    build: graph_gen
+    image: ecstasy-loop-graph-gen:0.1
+    env_file:
+      - "settings/env/graph_gen.env"
+    restart: on-failure
+    hostname: graph_gen
+    depends_on:
+      - redis
+    networks:
+      - ecstasy-loop-internal-network
+
+
+networks:
+  # Создаем свою сеть, чтобы не было конфликтов с уже существующей
+  ecstasy-loop-public-network:
+    ipam:
+      driver: default
+      config:
+        - subnet: '10.198.198.0/29'
+  ecstasy-loop-internal-network:
+    ipam:
+      driver: default
+      config:
+        - subnet: '10.199.198.0/29'

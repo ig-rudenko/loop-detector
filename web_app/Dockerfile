@@ -14,4 +14,4 @@ COPY . .
 
 ENTRYPOINT ["python"]
 
-CMD ["main.py"]
+CMD ["run.py"]
