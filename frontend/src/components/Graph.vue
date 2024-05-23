@@ -8,7 +8,7 @@
       <p v-if="selectedNode">Node ID: {{ selectedNode }}</p>
 
       <MessagesTable v-if="selectedEdge"
-                     :messages="selectedEdge.messages" :header="String(selectedEdge.id)"/>
+                     :messages="selectedEdge.messages" :header="selectedEdgeHeader"/>
     </SplitterPanel>
 
   </Splitter>
@@ -60,8 +60,9 @@ export default defineComponent({
       this.nodes.set(item.id, item);
     });
 
+    // EDGE
     this.graphData.edges!.forEach((item: EdgeData) => {
-      item.title = this.htmlTitle((<string>item.title));
+      item.title = this.htmlTitle(this.getEdgeTitle(<string>item.title));
       this.formatMessages(item.messages);
       this.edges.set(item.id, item)
     });
@@ -88,7 +89,19 @@ export default defineComponent({
     this.network.on("click", this.onNetworkClick);
   },
 
+  computed: {
+    selectedEdgeHeader(): string {
+      let [fromDevice, toDevice] = String(this.selectedEdge!.id).split(":::")
+      return `Линк от '${fromDevice}' до '${toDevice}'`
+    },
+  },
+
   methods: {
+
+    getEdgeTitle(title: string): string {
+      return `<h3>${title}</h3>`
+    },
+
     htmlTitle(html: string): HTMLElement {
       const container = document.createElement("div");
       container.innerHTML = html;

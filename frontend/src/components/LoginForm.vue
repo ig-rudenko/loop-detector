@@ -39,14 +39,14 @@ export default defineComponent({
                 if (value.status == 200) {
                   this.$router.push("/");
                 } else {
-                  this.userError = (<AxiosError>value).message
+                  this.userError = getVerboseAxiosError((<AxiosError>value)).replace("\n", "<br>")
                 }
               },
               () => this.userError = 'Неверный логин или пароль'
           )
           .catch(
           (reason: AxiosError<any>) => {
-            this.userError = getVerboseAxiosError(reason)
+            this.userError = getVerboseAxiosError(reason).replace("\n", "<br>")
           }
       );
     },
@@ -62,7 +62,7 @@ export default defineComponent({
 <!--      <img src="/img/logo.jpg" alt="Image" height="512" class="mb-2 image-logo" />-->
 <!--    </div>-->
 
-    <div class="w-full max-w-23rem">
+    <div class="w-full max-w-26rem">
       <div class="text-center mb-3">
         <div class="text-900 text-3xl font-medium mb-3 flex flex-wrap justify-content-center">
           <div>Пожалуйста, войдите в </div>
@@ -74,8 +74,11 @@ export default defineComponent({
       </div>
 
       <div>
-        <div v-if="userError.length" class="flex justify-content-center">
-          <InlineMessage @click="userError = ''" severity="error"><span v-html="userError"></span></InlineMessage>
+        <div v-if="userError.length" class="flex justify-content-center mb-2">
+          <InlineMessage severity="error">
+            <template #icon><i @click="userError = ''" class="pi pi-times-circle mr-2 cursor-pointer"/></template>
+            <span v-html="userError"></span>
+          </InlineMessage>
         </div>
 
         <div class="mb-3">
@@ -88,9 +91,9 @@ export default defineComponent({
             <InputText @keydown.enter="handleLogin" v-model="user.password" id="password-input" type="password" :class="getClassesFor(user.valid.password)" />
         </div>
 
-        <div class="mb-3">
-          <a class="font-medium no-underline ml-2 text-black text-right cursor-pointer">Forgot password?</a>
-        </div>
+<!--        <div class="mb-3">-->
+<!--          <a class="font-medium no-underline ml-2 text-black text-right cursor-pointer">Forgot password?</a>-->
+<!--        </div>-->
 
         <Button label="Sign In" icon="pi pi-user" outlined severity="contrast" @click="handleLogin" class="w-full"></Button>
       </div>

@@ -73,8 +73,8 @@ class UserTokens {
 }
 
 function createNewUser(data: any): User {
-    return new User(data.id, data.username, data.isSuperuser, data.isStaff,
-        data.firstName, data.lastName, data.email, data.dateJoin)
+    return new User(data.id, data.username, data.is_superuser, data.is_staff,
+        data.first_name, data.last_name, data.email, data.date_join)
 }
 
 export {User, LoginUser, createNewUser, UserTokens}

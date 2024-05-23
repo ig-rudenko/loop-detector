@@ -12,14 +12,12 @@ class AuthService {
             })
             .then(
                 response => {
-                    if (response.data.accessToken) {
-                        TokenService.setUser(
-                            new UserTokens(
-                                response.data.access,
-                                response.data.refresh || null
-                            )
-                        );
-                    }
+                    TokenService.setUser(
+                        new UserTokens(
+                            response.data.access,
+                            response.data.refresh
+                        )
+                    );
                     return response
                 },
                 reason => {

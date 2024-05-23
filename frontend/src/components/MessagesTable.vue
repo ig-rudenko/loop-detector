@@ -4,7 +4,7 @@
              paginator :rows="10" paginator-position="top" :always-show-paginator="false" removableSort>
 
     <template #header>
-      <div><h3>{{header}}</h3></div>
+      <div><h3 v-html="header"></h3></div>
       <div>Всего сообщений: {{messages.length}}</div>
       <div class="mt-3 flex align-items-center flex-wrap justify-content-between">
           <div><Button type="button" icon="pi pi-filter-slash" label="Clear" size="small" outlined @click="clearFilter()" /></div>

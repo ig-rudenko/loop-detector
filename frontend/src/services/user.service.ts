@@ -1,11 +1,10 @@
-import {createNewUser, User} from "@/services/user";
+import {User} from "@/services/user";
 
 class UserService {
     getUser(): User | null {
         const data = localStorage.getItem("user")
         if (data) {
-            const jsonData = JSON.parse(data)
-            return createNewUser(jsonData)
+            return JSON.parse(data)
         }
         return null
     }

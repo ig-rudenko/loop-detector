@@ -1,3 +1,4 @@
+import json
 import os
 
 from app.api import API
@@ -95,3 +96,6 @@ if __name__ == "__main__":
 
     print(graph_data["nodes"])
     print(graph_data["edges"])
+
+    with open("examples/graph_17.05.2024.json", "w", encoding="utf-8") as f:
+        json.dump(graph_data, f, ensure_ascii=False, indent=4)
