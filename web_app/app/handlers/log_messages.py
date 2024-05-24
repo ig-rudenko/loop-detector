@@ -1,9 +1,8 @@
-from fastapi import APIRouter, Depends, Response, HTTPException
-
 from app.schemas.auth import UserSchema
 from app.schemas.log_messages import LogMessageSchema
 from app.services.auth import get_current_user
 from app.services.log_messages import get_current_log_messages, delete_current_log_messages
+from fastapi import APIRouter, Depends, Response, HTTPException
 
 router = APIRouter(prefix="/messages", tags=["messages"])
 
