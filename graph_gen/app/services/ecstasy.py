@@ -9,7 +9,7 @@ class UnauthorizedException(Exception):
 
 def auth_decorator(func):
     @wraps(func)
-    def wrapper(self: "API", *args, **kwargs):
+    def wrapper(self: "EcstasyAPI", *args, **kwargs):
         try:
             return func(self, *args, **kwargs)
         except UnauthorizedException:
@@ -19,7 +19,7 @@ def auth_decorator(func):
     return wrapper
 
 
-class API:
+class EcstasyAPI:
 
     def __init__(self, url: str, username: str, password: str):
         self.url = url

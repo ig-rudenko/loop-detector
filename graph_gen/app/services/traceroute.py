@@ -1,11 +1,11 @@
 import re
 
-from app.api import API
+from app.services.ecstasy import EcstasyAPI
 from app.graph import Node, Graph, Edge, Interface
 from app.services.device import find_device_name
 
 
-def find_target_ports(node: Node, graph: Graph, api: API) -> None:
+def find_target_ports(node: Node, graph: Graph, api: EcstasyAPI) -> None:
     for interface in node.interfaces:
         next_device = find_device_name(interface["Description"])
         if next_device and re.search(r"SSW\d+$", next_device):
@@ -19,7 +19,7 @@ def find_target_ports(node: Node, graph: Graph, api: API) -> None:
             )
 
 
-def get_back_port(node: Node, back_device_name: str, api: API) -> str:
+def get_back_port(node: Node, back_device_name: str, api: EcstasyAPI) -> str:
     if not node.interfaces:
         node.interfaces = api.get_device_interfaces(node.name)
 
@@ -30,7 +30,7 @@ def get_back_port(node: Node, back_device_name: str, api: API) -> str:
     return ""
 
 
-def find_next_device(from_node: Node, graph: Graph, api: API):
+def find_next_device(from_node: Node, graph: Graph, api: EcstasyAPI):
     """
     Find the next device in the network.
     """

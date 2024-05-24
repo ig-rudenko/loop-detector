@@ -1,101 +1,57 @@
-import json
-import os
+from threading import Thread
 
-from app.api import API
-from app.graph import Interface, Node, Graph
-from app.interfaces import compare_interfaces
-from app.loopd import get_loop_data, get_hits, get_unique_ips, process_logs
-from app.services.traceroute import find_next_device
+from loguru import logger
 
-devices_nodes = {}
-# devices_nodes = {
-#     "ip": {
-#         "interfaces": {},
-#         "ports": {
-#             "eth0": {
-#                 "messages": [
-#                     {"time": "2017-05-20T16:00:00Z", "message": ""},
-#                 ],
-#                 "description": "",
-#                 "status": "",
-#                 "vlan": "",
-#             }
-#         },
-#     }
-# }
+from app.loopd import GraphLoopBuilder
+from app.services.cache import get_cache
+from app.services.decorators import time_sleep_after
+from app.services.ecstasy import EcstasyAPI
+from app.services.elastic import ElasticAPI
+from app.services.log_parser import get_records, Record
+from app.services.logging import setup_logger
+from app.settings import settings
+
+
+@time_sleep_after(120)
+@logger.catch
+def main(ecstasy_api: EcstasyAPI, elastic_api: ElasticAPI):
+    logs_data = elastic_api.get_loop_logs(settings.loop_period, settings.es_index)
+
+    cache = get_cache()
+    cache_key = "loop_detected_records"
+    # Получаем прошлые логи из кеша.
+    past_logs_records: list[Record] = cache.get(cache_key) or []
+    new_logs_records = get_records(logs_data)
+
+    all_records = past_logs_records + new_logs_records
+    # Сохраняем все логи в кеш, чтобы их можно было использовать в будущем.
+    cache.set(cache_key, value=all_records, timeout=5 * 60)
+
+    builder = GraphLoopBuilder(elastic_api=elastic_api, ecstasy_api=ecstasy_api)
+    builder.build_initial_devices(all_records)
+    builder.create_initial_graph()
+
+    for _ in range(3):
+        builder.increase_graph_depth()
+        graph_data = builder.graph.build_graph()
+        logger.info("Built graph data", graph_depth=builder.graph_depth)
+        cache.set(f"currentLoop:depth={builder.graph_depth}", value=graph_data, timeout=6 * 60 * 60)
 
 
 if __name__ == "__main__":
-    DEPTH = 2  # Глубина поиска узлов.
+    setup_logger(settings.log_level)
 
-    load = get_loop_data("examples/loop-detected_17.05.2024.json")  # TODO: Заменить
-
-    hits = get_hits(load)
-    api = API(
-        url=os.environ.get("ECSTASY_URL"),
-        username=os.environ.get("ECSTASY_USERNAME"),
-        password=os.environ.get("ECSTASY_PASSWORD"),
-    )
-
-    addresses = get_unique_ips(hits)
-    for ip in addresses:
-        device_info = api.get_device_info(ip)
-
-        devices_nodes.setdefault(ip, {})
-        devices_nodes[ip]["name"] = device_info["deviceName"]
-        devices_nodes[ip]["interfaces"] = api.get_device_interfaces(ip)
-
-    for ip, port, message, timestamp in process_logs(hits):
-        devices_nodes[ip].setdefault("ports", {})
-        devices_nodes[ip]["ports"].setdefault(port, {})
-        devices_nodes[ip]["ports"][port].setdefault("messages", [])
-        devices_nodes[ip]["ports"][port].setdefault("messages_count", 0)
-
-        devices_nodes[ip]["ports"][port]["messages"].append({"message": message, "timestamp": timestamp})
-        devices_nodes[ip]["ports"][port]["messages_count"] += 1
-
-    # pprint(devices_nodes, depth=3)
-
-    initial_nodes = []
-
-    for ip, node in devices_nodes.items():
-        target_ports = []
-        for port, port_data in node["ports"].items():
-            port_desc = ""
-            for interface in node["interfaces"]:
-                if compare_interfaces(port, interface["Interface"]):
-                    target_ports.append(
-                        Interface(
-                            name=port,
-                            status=interface["Status"],
-                            desc=interface["Description"],
-                            vlans=interface["VLAN's"],
-                            messages=port_data["messages"],
-                        )
-                    )
-                    break
-
-        print(node["name"])
-        initial_nodes.append(
-            Node(
-                ip=ip,
-                name=node["name"],
-                interfaces=node["interfaces"],
-                target_ports=target_ports,
-                weight=1000,
-            )
+    while True:
+        logger.info("Запуск программы")
+        ecstasy = EcstasyAPI(
+            url=settings.ecstasy_url, username=settings.ecstasy_username, password=settings.ecstasy_password
         )
+        elastic = ElasticAPI(f"{settings.es_host}:{settings.es_port}", token=settings.es_token)
+        thread = Thread(target=main, args=(ecstasy, elastic), name="loopd")
 
-    graph = Graph(nodes=initial_nodes, edges=[])
-
-    for i in range(DEPTH):
-        for node in list(graph.nodes.values()):
-            find_next_device(node, graph, api)
-
-    graph_data = graph.build_graph()
-
-    print(graph_data["nodes"])
-    print(graph_data["edges"])
-
-    with open("examples/graph_17.05.2024.json", "w", encoding="utf-8") as f:
-        json.dump(graph_data, f, ensure_ascii=False, indent=4)
+        try:
+            thread.start()
+            thread.join()
+        except KeyboardInterrupt:
+            logger.info("Завершение программы.")
+            break
