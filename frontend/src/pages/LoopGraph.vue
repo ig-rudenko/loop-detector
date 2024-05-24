@@ -25,7 +25,8 @@ export default defineComponent({
 
   data() {
     return {
-      graphData: null as GraphData|null,
+      graphData: null as GraphData | null,
+      graphService: new GraphService(this.$toast),
     }
   },
 
@@ -51,7 +52,7 @@ export default defineComponent({
 
   methods: {
     getGraphData(): void {
-      GraphService.getStoredGraph(this.storedGraphName).then(data => this.graphData = data);
+      this.graphService.getStoredGraph(this.storedGraphName).then(data => this.graphData = data);
     },
   }
 })

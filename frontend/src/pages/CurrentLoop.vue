@@ -1,5 +1,9 @@
 <template>
   <Menu/>
+  <div class="flex flex-row align-items-center">
+    <div style="font-size: 1.2rem;" class="p-2">Глубина графа</div>
+    <SelectButton @change="getGraphData" v-model="depth" :options="[1, 2, 3]"/>
+  </div>
   <div v-if="graphData && graphData.nodes?.length">
     <Graph :graph-data="graphData"/>
   </div>
@@ -22,7 +26,9 @@ export default defineComponent({
 
   data() {
     return {
-      graphData: null as GraphData|null,
+      graphData: null as GraphData | null,
+      depth: 1,
+      graphService: new GraphService(this.$toast),
     }
   },
 
@@ -44,7 +50,7 @@ export default defineComponent({
 
   methods: {
     getGraphData(): void {
-      GraphService.getCurrentGraph().then(data => this.graphData = data);
+      this.graphService.getCurrentGraph(this.depth).then(data => this.graphData = data);
     },
   }
 })

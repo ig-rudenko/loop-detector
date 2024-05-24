@@ -1,7 +1,6 @@
 import {Edge} from "vis-network";
 import {Data} from "vis-network/declarations/network/Network";
 import api from "@/services/api";
-import {useToast} from "primevue/usetoast";
 import getVerboseAxiosError from "@/errorFmt.ts";
 import {ToastServiceMethods} from "primevue/toastservice";
 
@@ -27,9 +26,14 @@ export interface StoredGraphFile {
 
 
 class GraphService {
+    private toast: ToastServiceMethods;
 
-    private static toastError(toast: ToastServiceMethods, error: any) {
-        toast.add({
+    constructor(toast: ToastServiceMethods) {
+        this.toast = toast;
+    }
+
+    private toastError(error: any) {
+        this.toast.add({
             severity: 'error',
             summary: 'Error',
             detail: getVerboseAxiosError(error),
@@ -37,38 +41,34 @@ class GraphService {
         });
     }
 
-    static async getCurrentGraph(): Promise<GraphData> {
-        const toast = useToast();
+    async getCurrentGraph(depth: number = 1): Promise<GraphData> {
         try {
-            const resp = await api.get<GraphData>("/graph/current");
+            const resp = await api.get<GraphData>("/graph/current?depth=" + depth);
             return resp.data;
-
         } catch (error: any) {
-            this.toastError(toast, error);
+            this.toastError(error);
             return {nodes: [], edges: []};
         }
     }
 
-    static async getStoredGraphs(): Promise<StoredGraphFile[]>{
-        const toast = useToast();
+    async getStoredGraphs(): Promise<StoredGraphFile[]> {
         try {
             const resp = await api.get<StoredGraphFile[]>("/graph/stored");
             return resp.data;
 
         } catch (error: any) {
-            this.toastError(toast, error);
+            this.toastError(error);
             return [];
         }
     }
 
-    static async getStoredGraph(name: string): Promise<GraphData> {
-        const toast = useToast();
+    async getStoredGraph(name: string): Promise<GraphData> {
         try {
             const resp = await api.get<GraphData>(`/graph/stored/${name}`);
             return resp.data;
 
         } catch (error: any) {
-            this.toastError(toast, error);
+            this.toastError(error);
             return {nodes: [], edges: []};
         }
     }

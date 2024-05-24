@@ -4,7 +4,8 @@
   <div class="pt-5">
     <h1 class="text-center">Список петель, которые хранятся</h1>
   </div>
-  <div v-if="storedGraphs" v-for="info in storedGraphs" class="flex gap-3 flex-wrap justify-content-center align-items-center">
+  <div v-if="storedGraphs" v-for="info in storedGraphs"
+       class="flex gap-3 flex-wrap justify-content-center align-items-center">
     <LoopPreviewCard class="cursor-pointer" @click="$router.push('/loop/stored/'+info.name)" :info="info"/>
   </div>
 
@@ -31,7 +32,8 @@ export default defineComponent({
 
   data() {
     return {
-      storedGraphs: null as StoredGraphFile[]|null,
+      storedGraphs: null as StoredGraphFile[] | null,
+      graphService: new GraphService(this.$toast),
     }
   },
 
@@ -44,7 +46,7 @@ export default defineComponent({
 
   methods: {
     getStoredLoopGraphs(): void {
-      GraphService.getStoredGraphs().then(data => this.storedGraphs = data);
+      this.graphService.getStoredGraphs().then(data => this.storedGraphs = data);
     },
   }
 })
