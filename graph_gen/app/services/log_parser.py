@@ -4,7 +4,7 @@ from datetime import datetime
 from typing import TypedDict, Generator
 
 Host = TypedDict("Host", {"ip": str})
-Record = TypedDict("Record", {"@timestamp": str, "message": str, "host": Host}
+Record = TypedDict("Record", {"@timestamp": str, "message": str, "host": Host})
 
 
 def get_loop_data_from_file(filename: str) -> dict:
@@ -22,7 +22,7 @@ def get_unique_ips(records: list[Record]) -> list[str]:
 
 
 def process_logs(
-    records: list[Record],
+        records: list[Record],
 ) -> Generator[tuple[str, str, str, datetime], None, None]:
     for record in records:
         device_ip: str = record["host"]["ip"]
