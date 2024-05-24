@@ -4,7 +4,7 @@ from datetime import datetime
 from typing import TypedDict, Generator
 
 Host = TypedDict("Host", {"ip": str})
-Record = TypedDict("Record", {"@timestamp": str, "message": str, "host": Host})
+Record = TypedDict("Record", {"@timestamp": str, "message": str, "host": Host}
 
 
 def get_loop_data_from_file(filename: str) -> dict:
