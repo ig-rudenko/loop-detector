@@ -99,9 +99,9 @@ class RedisCache(AbstractCache):
             return pickle.loads(value)
         return None
 
-    def set(self, key: str, value: Any, expire: int) -> None:
+    def set(self, key: str, value: Any, timeout: int) -> None:
         logger.debug(f"Set to cache %s", key)
-        self._redis.set(key, pickle.dumps(value), ex=expire)
+        self._redis.set(key, pickle.dumps(value), ex=timeout)
 
     def delete(self, key: str) -> None:
         logger.debug(f"Delete_ from cache %s", key)
