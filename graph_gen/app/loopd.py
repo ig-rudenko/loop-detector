@@ -64,7 +64,7 @@ class GraphLoopBuilder:
         for ip in addresses:
             device_info = self._ecstasy_api.get_device_info(ip)
             self._devices_nodes.setdefault(ip, {})
-            self._devices_nodes[ip]["name"] = device_info["deviceName"]
+            self._devices_nodes[ip]["name"] = device_info.get("deviceName", "Unknown")
             self._devices_nodes[ip]["interfaces"] = self._ecstasy_api.get_device_interfaces(ip)
             self._devices_nodes[ip].setdefault("ports", {})
 
