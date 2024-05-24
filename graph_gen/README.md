@@ -12,23 +12,25 @@
 
 Переменные окружения (и значения по умолчанию):
 
-    log_level = "INFO"
-    loop_period = "2m"
+    LOG_LEVEL = "INFO"
+    LOOP_PERIOD = "2m"
 
     # ECSTASY
-    ecstasy_url
-    ecstasy_username
-    ecstasy_password
+    ECSTASY_URL
+    ECSTASY_USERNAME
+    ECSTASY_PASSWORD
 
     # ElasticSearch
-    es_host
-    es_port: int = 9200
-    es_index
-    es_token
+    ES_HOST
+    ES_PORT = 9200
+    ES_INDEX
+    ES_TOKEN
 
     # Redis
-    redis_host = ""
-    redis_port = 6379
-    redis_db = 0
-    redis_password = ""
+    REDIS_HOST = ""
+    REDIS_PORT = 6379
+    REDIS_DB = 0
+    REDIS_PASSWORD = ""
 
+Пример файла находится в папке `env/sample.env`.
+Для прода нужен файл `env/.env`
