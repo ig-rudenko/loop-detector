@@ -1,6 +1,6 @@
 <template>
   <Menu/>
-  <div v-if="graphData && graphData.nodes?.length" class="pt-3 border-round bg-white-alpha-50">
+  <div class="pt-3 border-round bg-white-alpha-50">
     <div class="flex flex-row align-items-center py-2 pl-4 gap-2">
       <div style="font-size: 1.2rem;">Глубина графа</div>
       <SelectButton :allow-empty="false" @change="getGraphData" v-model="depth" :options="[1, 2, 3]"/>
@@ -8,11 +8,14 @@
       <Button v-if="user?.isSuperuser" @click="visibleDeleteMessages=true" icon="pi pi-trash" label="Удалить сообщения"
               severity="danger" outlined/>
     </div>
-    <Graph :graph-data="graphData"/>
-  </div>
-  <div v-else>
-    <h1 class="text-center">В данный момент</h1>
-    <h1 class="text-center">нет петель на сети!</h1>
+    <Graph v-if="!loadingGraphData && graphData && graphData.nodes?.length" :graph-data="graphData"/>
+    <div v-else-if="loadingGraphData" class="flex justify-content-center p-3">
+      <ProgressSpinner/>
+    </div>
+    <div v-else-if="!loadingGraphData" class="p-3">
+      <h1 class="text-center">В данный момент</h1>
+      <h1 class="text-center">нет петель на сети!</h1>
+    </div>
   </div>
 
   <Dialog v-model:visible="visibleDeleteMessages" modal block-scroll
@@ -51,6 +54,7 @@ export default defineComponent({
   data() {
     return {
       graphData: null as GraphData | null,
+      loadingGraphData: true,
       depth: 1,
       graphService: new GraphService(this.$toast),
 
@@ -79,7 +83,16 @@ export default defineComponent({
 
   methods: {
     getGraphData(): void {
-      this.graphService.getCurrentGraph(this.depth).then(data => this.graphData = data);
+      this.loadingGraphData = true;
+      this.graphService.getCurrentGraph(this.depth)
+          .then(data => {
+            this.graphData = data;
+            this.loadingGraphData = false;
+          })
+          .catch((error: AxiosError) => {
+            this.toastError(error);
+            this.loadingGraphData = false;
+          })
     },
 
     showMessagesDialog() {
@@ -90,16 +103,7 @@ export default defineComponent({
     getCurrentMessages() {
       api.get<DetailMessage[]>("/messages/")
           .then(value => this.currentMessages = value.data)
-          .catch(
-              (error: AxiosError) => {
-                this.$toast.add({
-                  severity: 'error',
-                  summary: 'Error',
-                  detail: getVerboseAxiosError(error),
-                  life: 5000
-                })
-              }
-          )
+          .catch((error: AxiosError) => this.toastError(error))
     },
 
     deleteCurrentMessages() {
@@ -112,18 +116,18 @@ export default defineComponent({
               life: 5000
             })
           }
-      )
-          .catch(
-              (error: AxiosError) => {
-                this.$toast.add({
-                  severity: 'error',
-                  summary: 'Error',
-                  detail: getVerboseAxiosError(error),
-                  life: 5000
-                })
-              }
-          )
+      ).catch((error: AxiosError) => this.toastError(error))
+    },
+
+    toastError(error: AxiosError) {
+      this.$toast.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: getVerboseAxiosError(error),
+        life: 5000
+      })
     }
+
   }
 })
 </script>

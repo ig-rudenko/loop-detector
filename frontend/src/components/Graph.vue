@@ -13,11 +13,11 @@
 
   </Splitter>
 
-<!--EMPTY-->
+  <!--EMPTY-->
   <div v-else class="flex justify-content-center">
     <div>
       <h1 class="text-center">Нет петель на сети!</h1>
-<!--      <img src="/img/graph-icon.png"/>-->
+      <!--      <img src="/img/graph-icon.png"/>-->
     </div>
   </div>
 
@@ -46,12 +46,13 @@ export default defineComponent({
       edges: new Map(),
 
       selectedNode: null as Node | null,
-      selectedEdge: null as EdgeData|null,
+      selectedEdge: null as EdgeData | null,
       visibleSidebar: false,
     }
   },
   mounted() {
     if (!this.graphData.nodes?.length) return;
+    console.log("UPdATE")
 
     let container: HTMLElement = document.getElementById('net')!;
 
