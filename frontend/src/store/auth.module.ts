@@ -48,8 +48,8 @@ export const auth = {
             AuthService.logout();
             commit('logout');
         },
-        refreshTokens({ commit }: any, accessToken: string, refreshToken: string) {
-            commit('refreshTokens', accessToken, refreshToken);
+        refreshTokens({ commit }: any, tokens: any) {
+            commit('refreshTokens', tokens);
         }
     },
     mutations: {
@@ -73,10 +73,10 @@ export const auth = {
             state.status.loggedIn = false;
             state.user = null;
         },
-        refreshTokens(state: UserState, accessToken: string, refreshToken: string) {
+        refreshTokens(state: UserState, {access, refresh}: any) {
             state.status.loggedIn = true;
-            state.userTokens.accessToken = accessToken;
-            state.userTokens.refreshToken = refreshToken;
+            state.userTokens.accessToken = access;
+            state.userTokens.refreshToken = refresh;
         }
     }
 };

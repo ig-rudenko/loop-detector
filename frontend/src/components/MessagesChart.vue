@@ -9,7 +9,7 @@
 
 <script lang="ts">
 import {defineComponent, PropType} from "vue";
-import {DataGroup, DataItem, Graph2d, Graph2dOptions} from "vis-timeline";
+import {DataGroup, Graph2d, Graph2dOptions} from "vis-timeline";
 import "vis-timeline/styles/vis-timeline-graph2d.min.css"
 
 
@@ -21,7 +21,7 @@ export default defineComponent({
 
   data() {
     return {
-      graphData: [] as DataItem[],
+      graphData: [] as any[],
       showGraph: true,
     }
   },
@@ -34,7 +34,7 @@ export default defineComponent({
     let minTime: Date = new Date(this.data[0]["@timestamp"])
     let maxTime: Date = new Date(this.data[0]["@timestamp"])
 
-    const datesMap = new Map()
+    const datesMap: Map<string, number> = new Map()
 
     this.data.forEach((item: any) => {
       const hostIp = item["host"]["ip"]

@@ -1,7 +1,7 @@
 <template>
   <MessagesChart v-if="messages.length" :data="messages"/>
 
-  <DataTable :value="messages" size="small" data-key="@timestamp" sort-field="@timestamp" sort-order="-1"
+  <DataTable :value="messages" size="small" data-key="@timestamp" sort-field="@timestamp" :sort-order="-1"
              table-style="min-width: 50rem;"
              v-model:filters="filters" :globalFilterFields="['message']"
              paginator :rows="20" paginator-position="top" :always-show-paginator="false" removableSort>
