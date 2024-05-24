@@ -1,3 +1,5 @@
+from loguru import logger
+
 from app.schemas.graph import GraphSchema
 from app.services.cache import get_cache
 
@@ -16,11 +18,12 @@ async def get_current_loop(depth: int = 1) -> GraphSchema:
     """
     cache = get_cache()
     key = f"currentLoop:depth={depth}"
-    data = await cache.get(key)
+    data: dict = await cache.get(key)
     if data:
         try:
-            return GraphSchema.model_validate_json(data)
-        except ValueError:
+            return GraphSchema.model_validate(data)
+        except ValueError as e:
+            logger.error(f"Неверный формат данных для графа в кэше: {e}")
             raise GraphException("Неверный формат данных для графа в кэше")
 
     return GraphSchema(edges=[], nodes=[])
