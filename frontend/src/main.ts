@@ -4,6 +4,7 @@ import PrimeVue from 'primevue/config';
 import ToastService from 'primevue/toastservice';
 import Avatar from "primevue/avatar";
 import Button from "primevue/button";
+import ButtonGroup from "primevue/buttongroup";
 import Column from "primevue/column";
 import DataTable from 'primevue/datatable';
 import Dialog from "primevue/dialog";
@@ -46,6 +47,7 @@ app.config.globalProperties.$router = router as Router;
 
 app.component("Avatar", Avatar);
 app.component("Button", Button);
+app.component("ButtonGroup", ButtonGroup);
 app.component("Column", Column);
 app.component("DataTable", DataTable);
 app.component("Dialog", Dialog);

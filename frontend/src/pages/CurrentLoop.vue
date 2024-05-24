@@ -1,12 +1,13 @@
 <template>
   <Menu/>
   <div class="pt-3 border-round bg-white-alpha-50">
-    <div class="flex flex-row align-items-center py-2 pl-4 gap-2">
+    <div class="flex flex-wrap align-items-center py-2 pl-4 gap-2">
       <div style="font-size: 1.2rem;">Глубина графа</div>
       <SelectButton :allow-empty="false" @change="getGraphData" v-model="depth" :options="[1, 2, 3]"/>
-      <Button label="Все сообщения" outlined @click="showMessagesDialog"/>
-      <Button v-if="user?.isSuperuser" @click="visibleDeleteMessages=true" icon="pi pi-trash" label="Удалить сообщения"
-              severity="danger" outlined/>
+      <ButtonGroup>
+        <Button icon="pi pi-list" label="Все сообщения" @click="showMessagesDialog" severity="secondary"/>
+        <Button v-if="user?.isSuperuser" @click="visibleDeleteMessages=true" icon="pi pi-trash" severity="danger"/>
+      </ButtonGroup>
     </div>
     <Graph v-if="!loadingGraphData && graphData && graphData.nodes?.length" :graph-data="graphData"/>
     <div v-else-if="loadingGraphData" class="flex justify-content-center p-3">
@@ -29,7 +30,7 @@
     </div>
   </Dialog>
 
-  <Dialog v-model:visible="visibleMessagesDialog" header="Все сообщения">
+  <Dialog v-model:visible="visibleMessagesDialog" header="Все сообщения"  maximizable class="w-full">
     <FullMessagesTable :messages="currentMessages"/>
   </Dialog>
 

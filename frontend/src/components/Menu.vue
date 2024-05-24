@@ -19,6 +19,9 @@ export default defineComponent({
       loggedIn: (state: any) => state.auth.status.loggedIn,
       user: (state: any) => state.auth.user,
     }),
+    currentURL() {
+      return this.$route.path
+    }
   },
 
   methods: {
@@ -39,9 +42,9 @@ export default defineComponent({
 <template>
   <div class="flex py-1 my-1 justify-content-between align-items-start">
     <div class="gap-1 flex flex-wrap">
-      <Button icon="pi pi-home" @click="$router.push('/')" label="Главная" severity="secondary"></Button>
-      <Button icon="pi pi-spinner" @click="$router.push('/currentLoop')" label="Текущая" severity="secondary"></Button>
-      <Button v-if="user" @click="toggleUserDetail" icon="pi pi-user" :label="user.username" severity="secondary" />
+      <Button icon="pi pi-home" @click="$router.push('/')" label="Главная" raised :severity="currentURL=='/'?'contrast':'secondary'"></Button>
+      <Button icon="pi pi-spinner" @click="$router.push('/currentLoop')" label="Текущая" raised :severity="currentURL=='/currentLoop'?'contrast':'secondary'"></Button>
+      <Button v-if="user" @click="toggleUserDetail" icon="pi pi-user" :label="user.username" raised severity="secondary" />
     </div>
 
     <OverlayPanel ref="userDetail">
