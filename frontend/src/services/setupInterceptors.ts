@@ -55,7 +55,7 @@ const setup = (store: any) => {
 
                         const { access, refresh } = rs.data;
 
-                        store.dispatch('auth/refreshTokens', access, refresh);
+                        store.dispatch('auth/refreshTokens', rs.data);
                         TokenService.updateLocalTokens(access, refresh);
 
                         return axiosInstance(originalConfig);
