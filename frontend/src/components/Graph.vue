@@ -5,10 +5,16 @@
     </SplitterPanel>
 
     <SplitterPanel style="overflow: auto" :size="35">
-      <p v-if="selectedNode">Node ID: {{ selectedNode }}</p>
+      <div>
+<!--        <div v-if="selected.node" class="p-2">{{ selected.node }}</div>-->
 
-      <MessagesTable v-if="selectedEdge"
-                     :messages="selectedEdge.messages" :header="selectedEdgeHeader"/>
+        <MessagesTable v-if="selected.messages.length"
+                       :messages="selected.messages" :header="selectedMessagesHeader"/>
+        <div v-else class="p-3">
+          <h3 v-html="selectedMessagesHeader"></h3>
+          Нет сообщений
+        </div>
+      </div>
     </SplitterPanel>
 
   </Splitter>
@@ -28,7 +34,7 @@ import 'vis-network/styles/vis-network.min.css';
 
 import {defineComponent, PropType} from "vue";
 import {Network} from "vis-network";
-import {Options} from "vis-network/declarations/network/Network";
+import {Options, Node} from "vis-network/declarations/network/Network";
 import GraphImage from "@/components/GraphImage.vue";
 import {EdgeData, GraphData, Message} from "@/services/graph";
 import MessagesTable from "@/components/MessagesTable.vue";
@@ -45,17 +51,20 @@ export default defineComponent({
       nodes: new Map(),
       edges: new Map(),
 
-      selectedNode: null as Node | null,
-      selectedEdge: null as EdgeData | null,
+      selected: {
+        node: null as Node | null,
+        edges: [] as EdgeData[],
+        messages: [] as Message[],
+      },
       visibleSidebar: false,
     }
   },
   mounted() {
     if (!this.graphData.nodes?.length) return;
-    console.log("UPdATE")
 
     let container: HTMLElement = document.getElementById('net')!;
 
+    // NODES
     this.graphData.nodes!.forEach(item => {
       item.title = this.htmlTitle((<string>item.title));
       this.nodes.set(item.id, item);
@@ -68,7 +77,11 @@ export default defineComponent({
       this.edges.set(item.id, item)
     });
 
-    this.selectedEdge = (<EdgeData[]>this.graphData.edges!)[0]
+    if (this.graphData.edges?.length) {
+      // Начальное отображение сообщений
+      this.selected.messages = (<EdgeData[]>this.graphData.edges)[0].messages
+      this.selected.edges = [(<EdgeData[]>this.graphData.edges)[0]]
+    }
 
     let options: Options = {
       interaction: {
@@ -91,9 +104,25 @@ export default defineComponent({
   },
 
   computed: {
-    selectedEdgeHeader(): string {
-      let [fromDevice, toDevice] = String(this.selectedEdge!.id).split(":::")
-      return `Линк от '${fromDevice}' до '${toDevice}'`
+
+    selectedMessagesHeader(): string {
+      if (this.selected.node) {
+        return String((<HTMLElement>this.selected.node.title).innerHTML);
+      }
+
+      if (this.selected.edges.length > 0) {
+        let [fromDevice, toDevice] = String(this.selected.edges[0]!.id).split(":::")
+        const edgeLabelElement = <HTMLElement>this.selected.edges[0].title
+        const mathPorts = edgeLabelElement.innerHTML.match(/>(.*?) -&gt; (.*?)<br>/)
+
+        let fromPort, toPort = ""
+        if (mathPorts) {
+          fromPort = mathPorts[1]
+          toPort = mathPorts[2]
+        }
+        return `Линк от '${fromDevice}' (${fromPort}) до '${toDevice}' (${toPort})`
+      }
+      return ""
     },
   },
 
@@ -110,13 +139,28 @@ export default defineComponent({
     },
 
     onNetworkClick(params: any) {
+      // EDGES SELECT
       if (params.edges.length > 0 && params.nodes.length === 0) {
-        this.selectedEdge = this.edges.get(params.edges[0])
-        this.selectedNode = null
+        this.selected.node = null
+        this.selected.edges = [this.edges.get(params.edges[0])]
+        this.setSelectedMessagesForEdges(params.edges)
       }
+
+      // NODES
       if (params.nodes.length > 0) {
-        this.selectedNode = params.nodes[0];
-        this.selectedEdge = null;
+        this.selected.node = this.nodes.get(params.nodes[0]);
+        this.selected.edges = [];
+        for (const edgeId of params.edges) {
+          this.selected.edges.push(this.edges.get(edgeId));
+        }
+        this.setSelectedMessagesForEdges(params.edges)
+      }
+    },
+
+    setSelectedMessagesForEdges(edges: EdgeData[]) {
+      this.selected.messages = []
+      for (const edgeID of edges) {
+        this.selected.messages.push(...this.edges.get(edgeID).messages)
       }
     },
 

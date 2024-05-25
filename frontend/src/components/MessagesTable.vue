@@ -17,13 +17,18 @@
     <template #empty>Нет логов</template>
 
     <Column field="timestamp" header="@timestamp" :sortable="true" class="table-font"></Column>
-    <Column field="message" header="Message" class="table-font"></Column>
+    <Column field="message" header="Message" class="table-font">
+      <template #body="{data}">
+        <div v-html="formatWithMarkMessage(data['message'])"></div>
+      </template>
+    </Column>
   </DataTable>
 </template>
 
 <script lang="ts">
 import {defineComponent, PropType} from "vue";
 import {FilterMatchMode} from "primevue/api";
+import {formatMessage, formatMessageWithMark} from "@/services/messages.formatter.ts";
 
 interface Message {
   timestamp: string
@@ -47,6 +52,12 @@ export default defineComponent({
   methods: {
     clearFilter() {
       this.filters.global.value = null;
+    },
+    formatWithMarkMessage(message: string) {
+      if (this.filters.global.value) {
+        return formatMessageWithMark(message, this.filters.global.value);
+      }
+      return formatMessage(message);
     },
   }
 });

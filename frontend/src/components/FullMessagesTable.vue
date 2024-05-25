@@ -4,7 +4,7 @@
   <DataTable :value="messages" size="small" data-key="@timestamp" sort-field="@timestamp" :sort-order="-1"
              table-style="min-width: 50rem;"
              v-model:filters="filters" :globalFilterFields="['message']"
-             paginator :rows="20" paginator-position="top" :always-show-paginator="false" removableSort>
+             paginator :rows="20" paginator-position="top" :always-show-paginator="false">
 
     <template #header>
       <div>Всего: {{ messages.length }}</div>
@@ -26,7 +26,11 @@
       </template>
     </Column>
     <Column field="host.ip" header="IP" :sortable="true" class="table-font" style="width: 150px"></Column>
-    <Column field="message" header="Message" class="table-font"></Column>
+    <Column field="message" header="Message" class="table-font">
+      <template #body="{data}">
+        <div v-html="formatWithMarkMessage(data['message'])"></div>
+      </template>
+    </Column>
   </DataTable>
 </template>
 
@@ -35,6 +39,7 @@ import {defineComponent, PropType} from 'vue'
 import {FilterMatchMode} from "primevue/api";
 import {DetailMessage} from "@/types.ts";
 import MessagesChart from "@/components/MessagesChart.vue";
+import {formatMessage, formatMessageWithMark} from "../services/messages.formatter.ts";
 
 
 export default defineComponent({
@@ -52,6 +57,12 @@ export default defineComponent({
     }
   },
   methods: {
+    formatWithMarkMessage(message: string) {
+      if (this.filters.global.value) {
+        return formatMessageWithMark(message, this.filters.global.value);
+      }
+      return formatMessage(message);
+    },
     clearFilter() {
       this.filters.global.value = null;
     },
