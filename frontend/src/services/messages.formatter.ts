@@ -7,6 +7,10 @@ export function formatMessage(text: string): string {
         .replace(
             /port:?\s?\S+/ig,
             s => '<span class="m-1 px-2 border-round bg-green-100">' + s + '</span>'
+        )
+        .replace(
+            /(v|vlan)\d{1,4}/ig,
+            s => '<span class="m-1 px-2 border-round bg-indigo-500 text-white">' + s + '</span>'
         );
 }
 
