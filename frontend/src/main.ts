@@ -5,6 +5,7 @@ import ToastService from 'primevue/toastservice';
 import Avatar from "primevue/avatar";
 import Button from "primevue/button";
 import ButtonGroup from "primevue/buttongroup";
+import Card from "primevue/card";
 import Column from "primevue/column";
 import DataTable from 'primevue/datatable';
 import Dialog from "primevue/dialog";
@@ -19,6 +20,7 @@ import Sidebar from "primevue/sidebar";
 import SelectButton from "primevue/selectbutton";
 import Splitter from "primevue/splitter";
 import SplitterPanel from "primevue/splitterpanel";
+import Timeline from "primevue/timeline";
 import Tooltip from 'primevue/tooltip';
 
 // import "primevue/resources/themes/tailwind-light/theme.css"; // свежий
@@ -48,6 +50,7 @@ app.config.globalProperties.$router = router as Router;
 app.component("Avatar", Avatar);
 app.component("Button", Button);
 app.component("ButtonGroup", ButtonGroup);
+app.component("Card", Card);
 app.component("Column", Column);
 app.component("DataTable", DataTable);
 app.component("Dialog", Dialog);
@@ -62,5 +65,6 @@ app.component("SelectButton", SelectButton);
 app.component("Sidebar", Sidebar);
 app.component("Splitter", Splitter);
 app.component("SplitterPanel", SplitterPanel);
+app.component("Timeline", Timeline);
 
 app.mount('#app');

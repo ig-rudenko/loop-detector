@@ -1,12 +1,17 @@
 <template>
   <Menu/>
 
-  <div class="pt-5">
+  <Welcome/>
+
+  <div class="py-5">
     <h1 class="text-center">Список петель, которые хранятся</h1>
-  </div>
-  <div v-if="storedGraphs" v-for="info in storedGraphs"
-       class="flex gap-3 flex-wrap justify-content-center align-items-center">
-    <LoopPreviewCard class="cursor-pointer" @click="$router.push('/loop/stored/'+info.name)" :info="info"/>
+    <div v-if="storedGraphs?.length" v-for="info in storedGraphs"
+         class="flex gap-3 flex-wrap justify-content-center align-items-center">
+      <LoopPreviewCard class="cursor-pointer" @click="$router.push('/loop/stored/'+info.name)" :info="info"/>
+    </div>
+    <div v-else class="flex justify-content-center">
+      <div class="p-5 border-dashed border-1 border-round shadow-2">Пока нет хранимых данных</div>
+    </div>
   </div>
 
 </template>
@@ -17,10 +22,11 @@ import Menu from "@/components/Menu.vue";
 import {mapState} from "vuex";
 import {GraphService, StoredGraphFile} from "@/services/graph.ts";
 import LoopPreviewCard from "@/components/LoopPreviewCard.vue";
+import Welcome from "@/components/Welcome.vue";
 
 export default defineComponent({
   name: "Home",
-  components: {LoopPreviewCard, Menu},
+  components: {Welcome, LoopPreviewCard, Menu},
   mounted() {
     document.title = "Ecstasy-Loop";
     if (!this.loggedIn) {
