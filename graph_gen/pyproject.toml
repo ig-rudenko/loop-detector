@@ -1,6 +1,6 @@
 [tool.poetry]
-name = "loop-detected"
-version = "0.1.0"
+name = "app"
+version = "0.2.7"
 description = ""
 authors = ["ig-rudenko <ig.rudenko1@yandex.ru>"]
 readme = "README.md"

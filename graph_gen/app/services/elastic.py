@@ -23,7 +23,7 @@ class ElasticAPI:
         resp = self._session.get(
             f"{self._url}/{index_name}/_search",
             json=self.get_search_params(period),
-            timeout=5,
+            timeout=30,
         )
         if resp.status_code != 200:
             return {}
@@ -46,9 +46,9 @@ class ElasticAPI:
                         {
                             "bool": {
                                 "should": [
-                                    {"match": {"message": "loop detected"}},
-                                    {"match": {"message": "detect loop"}},
-                                    {"match": {"message": "loop guard"}},
+                                    {"match_phrase": {"message": "loop detected"}},
+                                    {"match_phrase": {"message": "detect loop"}},
+                                    {"match_phrase": {"message": "loop guard"}},
                                 ]
                             }
                         },
