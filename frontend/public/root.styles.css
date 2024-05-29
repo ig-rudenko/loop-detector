@@ -13,4 +13,5 @@
   bottom: 0;
   z-index: -1;
   user-select: none;
+  opacity: 0.4;
 }
