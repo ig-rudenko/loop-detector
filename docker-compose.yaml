@@ -48,6 +48,8 @@ services:
     image: ecstasy-loop-graph-gen:0.1
     env_file:
       - "graph_gen/env/.env"
+    volumes:
+      - "./loop_storage:/app/loop_storage"
     restart: on-failure
     hostname: graph_gen
     depends_on:

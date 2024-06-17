@@ -1,7 +1,13 @@
+from pathlib import Path
+
 from pydantic_settings import BaseSettings
 
 
 class _Config(BaseSettings):
+    base_dir: Path = Path(__file__).parent.parent
+    storage: str = (base_dir / "storage").absolute().as_posix()
+    cache_timeout: int = 300
+
     log_level: str = "INFO"
     # Loop daemon
     loop_period: str = "2m"

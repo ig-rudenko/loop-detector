@@ -5,9 +5,9 @@
 
   <div class="py-5">
     <h1 class="text-center">Список петель, которые хранятся</h1>
-    <div v-if="storedGraphs?.length" v-for="info in storedGraphs"
-         class="flex gap-3 flex-wrap justify-content-center align-items-center">
-      <LoopPreviewCard class="cursor-pointer" @click="$router.push('/loop/stored/'+info.name)" :info="info"/>
+    <div v-if="storedGraphs?.length" class="flex gap-3 flex-wrap justify-content-center align-items-center">
+      <LoopPreviewCard v-for="info in storedGraphs" class="cursor-pointer"
+                       @click="$router.push('/loop/stored/'+info.name)" :info="info"/>
     </div>
     <div v-else class="flex justify-content-center">
       <div class="p-5 border-dashed border-1 border-round shadow-2">Пока нет хранимых данных</div>

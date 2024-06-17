@@ -1,7 +1,11 @@
 from app.schemas.auth import UserSchema
 from app.schemas.log_messages import LogMessageSchema
 from app.services.auth import get_current_user
-from app.services.log_messages import get_current_log_messages, delete_current_log_messages
+from app.services.log_messages import (
+    get_current_log_messages,
+    delete_current_log_messages,
+    get_stored_log_messages,
+)
 from fastapi import APIRouter, Depends, Response, HTTPException
 
 router = APIRouter(prefix="/messages", tags=["messages"])
@@ -18,3 +22,9 @@ async def delete_messages(user: UserSchema = Depends(get_current_user)):
         raise HTTPException(status_code=403, detail="Not enough permissions to delete messages")
     await delete_current_log_messages()
     return Response(status_code=204)
+
+
+@router.get("/stored/{filename}", response_model=list[LogMessageSchema])
+def get_stored_messages(filename: str):
+    filename = filename.rstrip(".json")
+    return get_stored_log_messages(filename)

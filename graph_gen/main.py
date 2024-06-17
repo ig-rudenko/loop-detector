@@ -7,7 +7,9 @@ from app.services.cache import get_cache
 from app.services.decorators import time_sleep_after
 from app.services.ecstasy import EcstasyAPI
 from app.services.elastic import ElasticAPI
-from app.services.log_parser import get_records, Record
+from app.services.graph_writter import write_graph
+from app.services.log_parser import get_records
+from app.services.log_recorder import LogsRecorder
 from app.services.logging import setup_logger
 from app.settings import settings
 
@@ -16,26 +18,25 @@ from app.settings import settings
 @logger.catch
 def main(ecstasy_api: EcstasyAPI, elastic_api: ElasticAPI):
     logs_data = elastic_api.get_loop_logs(settings.loop_period, settings.es_index)
-
-    cache = get_cache()
-    cache_key = "loop_detected_records"
-    # Получаем прошлые логи из кеша.
-    past_logs_records: list[Record] = cache.get(cache_key) or []
     new_logs_records = get_records(logs_data)
 
-    all_records = past_logs_records + new_logs_records
-    # Сохраняем все логи в кеш, чтобы их можно было использовать в будущем.
-    cache.set(cache_key, value=all_records, timeout=5 * 60)
+    recorder = LogsRecorder(new_logs_records)
+    all_records = recorder.get_all_logs_records()
+    loop_name = recorder.get_loop_name()
+    recorder.save()
 
     builder = GraphLoopBuilder(elastic_api=elastic_api, ecstasy_api=ecstasy_api)
     builder.build_initial_devices(all_records)
     builder.create_initial_graph()
 
-    for _ in range(3):
+    cache = get_cache()
+    for i in range(3):
         builder.increase_graph_depth()
         graph_data = builder.graph.build_graph()
         logger.info("Built graph data", graph_depth=builder.graph_depth)
         cache.set(f"currentLoop:depth={builder.graph_depth}", value=graph_data, timeout=6 * 60 * 60)
+        if i == 2:
+            write_graph(graph_data, loop_name)
 
 
 if __name__ == "__main__":

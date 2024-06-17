@@ -19,7 +19,8 @@ class GraphStorage:
         try:
             files = [
                 f for f in self._graph_storage_dir.iterdir()
-                if f.is_file() and f.suffix == '.json' and f.name.startswith('graph_')
+                if f.is_file() and f.suffix == '.json' and f.name.startswith('graph_') and
+                not f.name.endswith("_messages.json")
             ]
         except FileNotFoundError:
             raise GraphStorage.GraphStorageException(f'Graph storage directory not found: `{self._graph_storage_dir}`')
@@ -33,9 +34,9 @@ class GraphStorage:
             reverse=True,
         )
 
-    def get_storage_file(self, file_name: str) -> GraphSchema:
+    def get_storage_file(self, name: str) -> GraphSchema:
         try:
-            with (self._graph_storage_dir / file_name).open() as f:
+            with (self._graph_storage_dir / f"{name}.json").open() as f:
                 return GraphSchema.model_validate_json(f.read())
         except (OSError, json.JSONDecodeError):
-            raise GraphStorage.GraphStorageException(f'Failed to load file {file_name}')
+            raise GraphStorage.GraphStorageException(f'Failed to load file {name}')
