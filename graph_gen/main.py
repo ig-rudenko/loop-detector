@@ -35,7 +35,7 @@ def main(ecstasy_api: EcstasyAPI, elastic_api: ElasticAPI):
         graph_data = builder.graph.build_graph()
         logger.info("Built graph data", graph_depth=builder.graph_depth)
         cache.set(f"currentLoop:depth={builder.graph_depth}", value=graph_data, timeout=6 * 60 * 60)
-        if i == 2:
+        if i == 2 and graph_data["nodes"]:
             write_graph(graph_data, loop_name)
 
 
