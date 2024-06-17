@@ -19,7 +19,7 @@ class GraphStorage:
         try:
             files = [
                 f for f in self._graph_storage_dir.iterdir()
-                if f.is_file() and f.suffix == '.json' and f.name.startswith('graph_') and
+                if f.is_file() and f.suffix == '.json' and f.name.startswith('loop_') and
                 not f.name.endswith("_messages.json")
             ]
         except FileNotFoundError:

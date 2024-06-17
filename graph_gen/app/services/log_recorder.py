@@ -44,7 +44,7 @@ class LogsRecorder:
     def get_loop_name(self):
         cached_name: str | None = self._cache.get("current_loop_name")
         if cached_name is None:
-            name = f"loop_{datetime.now().strftime('%Y.%m.%d_%H:%M')}"
+            name = f"loop_{datetime.now().strftime('%d.%m.%Y_%H:%M')}"
             self._cache.set("current_loop_name", value=name, timeout=self._cache_timeout)
         else:
             name = cached_name
