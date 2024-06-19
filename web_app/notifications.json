@@ -1,0 +1,16 @@
+{
+  "telegram": [
+    {
+      "name": "Notification Bot",
+      "description": "Описание бота",
+      "token": "01283901823:OAKSODJAISHDSDHSDHFSDKHSDF",
+      "chats": [
+        {
+          "id": 1123123123123,
+          "name": "test",
+          "description": "Описание"
+        }
+      ]
+    }
+  ]
+}
