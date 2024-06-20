@@ -28,7 +28,7 @@ export default defineComponent({
   components: {AddNewTelegramNotification, TelegramNotification, LoopPreviewCard, Menu},
   data() {
     return {
-      tgService: {} as TelegramNotificationsService,
+      tgService: new TelegramNotificationsService(),
       telegramNotifications: [] as TgNotification[],
     }
   },

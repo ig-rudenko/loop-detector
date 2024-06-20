@@ -11,24 +11,24 @@
       <template #content>
         <div class="mb-2">
           <div class="flex-auto">
-            <label for="new-chat-id" class="font-bold block mb-2">Название</label>
+            <label for="new-chat-id" class="font-bold block mb-2">Название бота</label>
             <InputText id="new-chat-id" style="font-family: monospace" v-model="name" class="w-full"/>
           </div>
         </div>
         <div class="mb-2">
           <div class="flex-auto">
-            <label for="new-chat-id" class="font-bold block mb-2">Токен</label>
+            <label for="new-chat-id" class="font-bold block mb-2">Токен бота</label>
             <InputText id="new-chat-id" type="password" style="font-family: monospace" v-model="token" class="w-full"/>
           </div>
         </div>
         <div class="mb-2">
           <div class="flex-auto">
-            <label for="new-chat-id" class="font-bold block mb-2">Описание</label>
+            <label for="new-chat-id" class="font-bold block mb-2">Описание бота</label>
             <Textarea id="new-chat-id" style="font-family: monospace" v-model="description" rows="6" class="w-full"/>
           </div>
         </div>
 
-        <Button severity="success" label="Создать" outlined @click="create" />
+        <Button severity="success" label="Добавить" outlined @click="create" />
 
       </template>
     </Card>
