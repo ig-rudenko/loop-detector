@@ -1,6 +1,4 @@
-import json
-
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ValidationError
 
 from app.services.decorators import singleton
 from app.settings import settings
@@ -142,7 +140,7 @@ class NotificationsConfig:
         try:
             with open(self._config_file_path, "r", encoding="utf-8", errors="ignore") as file:
                 return _NotificationConfig.model_validate_json(file.read())
-        except (FileNotFoundError, PermissionError, json.JSONDecodeError):
+        except (FileNotFoundError, PermissionError, ValidationError):
             return _NotificationConfig()
 
     def _save_config(self):
