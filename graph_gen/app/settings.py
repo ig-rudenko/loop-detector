@@ -6,6 +6,9 @@ from pydantic_settings import BaseSettings
 class _Config(BaseSettings):
     base_dir: Path = Path(__file__).parent.parent
     storage: str = (base_dir / "storage").absolute().as_posix()
+    notifications_config: str = (base_dir / "notifications.json").absolute().as_posix()
+    records_count_notification_limit: int = 0
+
     cache_timeout: int = 300
 
     log_level: str = "INFO"
