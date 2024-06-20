@@ -18,6 +18,10 @@ services:
       - "/etc/ssl/certs/selfsigned.crt:/etc/ssl/selfsigned.crt:ro"
       # Ключи Диффи-Хеллмана
       - "/etc/ssl/certs/dhparam.pem:/etc/ssl/dhparam.pem:ro"
+
+      - "/etc/timezone:/etc/timezone:ro"
+      - "/etc/localtime:/etc/localtime:ro"
+
     depends_on:
       - api-1
     networks:
@@ -32,6 +36,11 @@ services:
       - "web_app/env/.env"
     volumes:
       - "./loop_storage:/app/loop_storage"
+      - "./notifications.json:/app/notifications.json"
+
+      - "/etc/timezone:/etc/timezone:ro"
+      - "/etc/localtime:/etc/localtime:ro"
+
     depends_on:
       - redis
     networks:
@@ -46,12 +55,18 @@ services:
   graph_gen:
     build: graph_gen
     image: ecstasy-loop-graph-gen:0.1
+    restart: on-failure
+    hostname: graph_gen
+
     env_file:
       - "graph_gen/env/.env"
     volumes:
       - "./loop_storage:/app/loop_storage"
-    restart: on-failure
-    hostname: graph_gen
+      - "./notifications.json:/app/notifications.json:ro"
+
+      - "/etc/timezone:/etc/timezone:ro"
+      - "/etc/localtime:/etc/localtime:ro"
+
     depends_on:
       - redis
     networks:

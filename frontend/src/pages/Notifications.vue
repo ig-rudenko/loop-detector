@@ -6,9 +6,10 @@
       <i class="text-blue-500 pi pi-telegram text-4xl"/> Telegram оповещения
     </h1>
     <div class="justify-content-center gap-2">
-      <AddNewTelegramNotification :notification-service="tgService" @created="getTelegramNotifications"/>
+      <AddNewTelegramNotification :notification-service="telegramService" @created="getTelegramNotifications"/>
       <TelegramNotification v-for="n in telegramNotifications"
-                            :notification="n" :notification-service="tgService" @update="getTelegramNotifications"/>
+                            :notification="n" :notificationService="telegramService"
+                            @update="getTelegramNotifications"/>
     </div>
   </div>
 
@@ -18,7 +19,7 @@
 import {defineComponent} from 'vue';
 import Menu from '@/components/Menu.vue';
 import LoopPreviewCard from "@/components/LoopPreviewCard.vue";
-import {TelegramNotificationsService, TgNotification} from "@/services/telegramNotifications.ts";
+import {TelegramNotificationsService, TgNotification} from "@/services/telegramNotifications";
 import TelegramNotification from "@/components/TelegramNotification.vue";
 import AddNewTelegramNotification from "@/components/AddNewTelegramNotification.vue";
 
@@ -27,17 +28,24 @@ export default defineComponent({
   components: {AddNewTelegramNotification, TelegramNotification, LoopPreviewCard, Menu},
   data() {
     return {
-      tgService: new TelegramNotificationsService(),
+      tgService: {} as TelegramNotificationsService,
       telegramNotifications: [] as TgNotification[],
     }
   },
 
   mounted() {
     this.getTelegramNotifications()
+    this.tgService = new TelegramNotificationsService();
+  },
+
+  computed: {
+    telegramService(): TelegramNotificationsService {
+      return <TelegramNotificationsService>this.tgService
+    }
   },
 
   methods: {
-    getTelegramNotifications()  {
+    getTelegramNotifications() {
       this.tgService.getNotifications().then(
           value => this.telegramNotifications = value
       )

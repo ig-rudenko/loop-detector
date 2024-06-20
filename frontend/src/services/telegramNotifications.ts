@@ -2,7 +2,7 @@ import api from "@/services/api.ts";
 import {useToast} from "primevue/usetoast";
 import getVerboseAxiosError from "@/errorFmt.ts";
 import {ToastServiceMethods} from "primevue/toastservice";
-import {de} from "vis-network/declarations/network/locales";
+import {AxiosResponse} from "axios";
 
 
 export interface Chat {
@@ -24,7 +24,7 @@ export class TelegramNotificationsService {
         this.toast = useToast()
     }
 
-    private toastError(error: any) {
+    private toastError(error: any): void {
         this.toast.add({
             severity: 'error',
             summary: 'Error',
@@ -33,7 +33,7 @@ export class TelegramNotificationsService {
         });
     }
 
-    async addBot(name: string, token: string, description: string) {
+    async addBot(name: string, token: string, description: string): Promise<void> {
         try {
             await api.post("/notifications/telegram", {
                 name: name,
@@ -46,7 +46,7 @@ export class TelegramNotificationsService {
         }
     }
 
-    async updateBot(notificationName: string, newName?: string, newToken?: string, newDescription?: string) {
+    async updateBot(notificationName: string, newName?: string, newToken?: string, newDescription?: string): Promise<void> {
         let updateData: any = {}
         if (newName != undefined && newName.length > 0) updateData["name"] = newName
         if (newToken != undefined && newToken.length > 0) updateData["token"] = newToken
@@ -60,7 +60,7 @@ export class TelegramNotificationsService {
         }
     }
 
-    async deleteBot(notificationName: string) {
+    async deleteBot(notificationName: string): Promise<void> {
         try {
             await api.delete("/notifications/telegram/" + notificationName)
         } catch (error) {
@@ -72,9 +72,9 @@ export class TelegramNotificationsService {
 
     // CHATS
 
-    async getNotifications() {
+    async getNotifications(): Promise<TgNotification[]> {
         try {
-            const response = await api.get<TgNotification[]>('/notifications/telegram');
+            const response: AxiosResponse<TgNotification[]> = await api.get('/notifications/telegram');
             return response.data;
         } catch (error) {
             this.toastError(error);
@@ -82,20 +82,19 @@ export class TelegramNotificationsService {
         }
     }
 
-    async addChat(notificationName: string, chat: Chat) {
+    async addChat(notificationName: string, chat: Chat): Promise<AxiosResponse<any, any>> {
         try {
-            const resp = await api.post(
+            return await api.post(
                 "/notifications/telegram/" + notificationName + "/chats",
                 chat
             )
-            return resp
         } catch (error) {
             this.toastError(error)
             throw error
         }
     }
 
-    async updateChat(notificationName: string, chat: Chat) {
+    async updateChat(notificationName: string, chat: Chat): Promise<void> {
         try {
             await api.patch(
                 "/notifications/telegram/" + notificationName + "/chats/" + chat.id,
@@ -107,7 +106,7 @@ export class TelegramNotificationsService {
         }
     }
 
-    async deleteChat(notificationName: string, chatID: number) {
+    async deleteChat(notificationName: string, chatID: number): Promise<void> {
         try {
             await api.delete("/notifications/telegram/" + notificationName + "/chats/" + chatID)
         } catch (error) {
@@ -116,7 +115,7 @@ export class TelegramNotificationsService {
         }
     }
 
-    async sendTestMessage(notificationName: string, chatID: number) {
+    async sendTestMessage(notificationName: string, chatID: number): Promise<AxiosResponse<any, any>> {
         try {
             return await api.post("/notifications/telegram/" + notificationName + "/chats/" + chatID + "/testMessage")
         } catch (error) {
