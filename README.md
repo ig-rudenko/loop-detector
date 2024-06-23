@@ -1,6 +1,8 @@
 ## Loop Detector
 
-Схема работы
+![techs](https://skillicons.dev/icons?i=py,redis,fastapi,vue,vite,ts,docker)
+
+## Структура приложения
 
 ![schema](/docs/schema.jpg)
 
