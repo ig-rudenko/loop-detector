@@ -29,11 +29,7 @@
 import {defineComponent, PropType} from "vue";
 import {FilterMatchMode} from "primevue/api";
 import {formatMessage, formatMessageWithMark} from "@/services/messages.formatter.ts";
-
-interface Message {
-  timestamp: string
-  message: string
-}
+import {Message} from "@/services/graph";
 
 export default defineComponent({
   name: "MessagesTable",

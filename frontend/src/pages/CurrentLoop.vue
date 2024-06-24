@@ -9,6 +9,11 @@
         <Button v-if="user?.isSuperuser" @click="visibleDeleteMessages=true" icon="pi pi-trash" severity="danger"/>
       </ButtonGroup>
     </div>
+
+    <div class="py-2 pl-4 gap-2">
+      <MessagesInfo v-if="!currentMessages.length" :messages="currentMessages" />
+    </div>
+
     <Graph v-if="!loadingGraphData && graphData && graphData.nodes?.length" :graph-data="graphData"/>
     <div v-else-if="loadingGraphData" class="flex justify-content-center p-3">
       <ProgressSpinner/>
@@ -47,10 +52,11 @@ import api from "@/services/api.ts";
 import {DetailMessage} from "@/types.ts";
 import getVerboseAxiosError from "@/errorFmt.ts";
 import {AxiosError} from "axios";
+import MessagesInfo from "@/components/MessagesInfo.vue";
 
 export default defineComponent({
   name: "LoopGraph",
-  components: {FullMessagesTable, Graph, Menu},
+  components: {MessagesInfo, FullMessagesTable, Graph, Menu},
 
   data() {
     return {

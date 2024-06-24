@@ -3,6 +3,7 @@ import {Router} from "vue-router";
 import PrimeVue from 'primevue/config';
 import ToastService from 'primevue/toastservice';
 import Avatar from "primevue/avatar";
+import Badge from "primevue/badge/Badge.vue";
 import Button from "primevue/button";
 import ButtonGroup from "primevue/buttongroup";
 import Card from "primevue/card";
@@ -48,6 +49,7 @@ app.use(router);
 app.config.globalProperties.$router = router as Router;
 
 app.component("Avatar", Avatar);
+app.component("Badge", Badge);
 app.component("Button", Button);
 app.component("ButtonGroup", ButtonGroup);
 app.component("Card", Card);
