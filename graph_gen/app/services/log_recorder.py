@@ -38,14 +38,16 @@ class LogsRecorder:
 
     def _save_to_file(self, records: list[Record]):
         if self.has_new_logs:
-            with (Path(settings.storage) / f"{self._loop_name}_messages.json").open(mode="w") as file:
+            storage_path = Path(settings.storage)
+            storage_path.mkdir(parents=True, exist_ok=True)
+            with (storage_path / f"{self._loop_name}_messages.json").open(mode="w") as file:
                 json.dump(records, file)
 
     def get_loop_name(self):
         cache_key = "current_loop_name"
         cached_name: str | None = self._cache.get(cache_key)
         if cached_name is None:
-            name = f"loop_{datetime.now().strftime('%d.%m.%Y_%H:%M')}"
+            name = f"loop_{datetime.now().strftime('%d.%m.%Y_%H.%M')}"
             self._cache.set(cache_key, value=name, timeout=self._cache_timeout)
         else:
             name = cached_name

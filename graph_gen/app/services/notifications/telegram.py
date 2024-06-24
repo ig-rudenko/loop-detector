@@ -19,8 +19,8 @@ class TelegramNotificationBuilder(NotificationBuilder):
 
     def _build_notification_message(self) -> str:
         return f"""
-Замечена петля на сети!
-{datetime.now().strftime('%d %B %Y %H:%M')}
+❗️Замечена петля на сети❗️
+🗓 {datetime.now().strftime('%d %B %Y %H:%M')}
 
 Количество сообщений: {self.records_count}
 Оборудование:
