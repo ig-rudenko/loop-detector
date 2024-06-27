@@ -15,7 +15,7 @@ services:
       # Приватный ключ
       - "/etc/ssl/loop-detected/cert.pem:/etc/ssl/cert.pem:ro"
       # Сертификат
-      - "/etc/ssl/loop-detected/privkey.pem:/etc/ssl/selfsigned.crt:ro"
+      - "/etc/ssl/loop-detected/privkey.pem:/etc/ssl/privkey.pem:ro"
 
       - "/etc/timezone:/etc/timezone:ro"
       - "/etc/localtime:/etc/localtime:ro"
