@@ -51,6 +51,7 @@ export default defineComponent({
 
   methods: {
     getStoredLoopGraphs(): void {
+      this.storedGraphs = []
       this.graphService.getStoredGraphs().then(data => this.storedGraphs = data);
     },
     deleteLoop(loopName: string): void {

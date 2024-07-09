@@ -96,7 +96,8 @@ export default defineComponent({
 
   methods: {
     deleteLoop() {
-      this.$emit("delete")
+      this.$emit("delete");
+      this.showModalDelete = false;
     }
   }
 
