@@ -21,6 +21,21 @@ def get_unique_ips(records: list[Record]) -> list[str]:
     return list({record["host"]["ip"] for record in records})
 
 
+def get_unique_vlans(records: list[Record]) -> dict[int, int]:
+    """Returns a dict of unique VLANs and their counts"""
+    result: dict[int, int] = {}
+    for record in records:
+        vlans: list[str] = re.findall(r"(!?=VLAN)\d{1,4}|(!?=v)\d{1,4}", record["message"])
+        for vlan in vlans:
+            try:
+                vid = int(vlan)
+            except ValueError:
+                continue
+            result.setdefault(vid, 0)
+            result[vid] += 1
+    return result
+
+
 def process_logs(
         records: list[Record],
 ) -> Generator[tuple[str, str, str, datetime], None, None]:

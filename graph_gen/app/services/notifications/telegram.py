@@ -3,6 +3,7 @@ from datetime import datetime
 import requests
 from pydantic import BaseModel
 
+from app.services.log_parser import get_unique_vlans
 from app.services.notifications.builder import NotificationBuilder
 
 
@@ -18,11 +19,17 @@ class TelegramNotificationSchema(BaseModel):
 class TelegramNotificationBuilder(NotificationBuilder):
 
     def _build_notification_message(self) -> str:
+        vlans = get_unique_vlans(self.records)
+        vlans_text = "\n".join(
+            [f"🌐 VLAN {vid} ({self.get_vlan_name(vid)}) в кол-ве {count}" for vid, count in vlans.items()]
+        )
+
         return f"""
 ❗️Замечена петля на сети❗️
 🗓 {datetime.now().strftime('%d %B %Y %H:%M')}
 
-Количество сообщений: {self.records_count}
+Количество сообщений: {len(self.records)}
+{vlans_text}
 Оборудование:
 {'\n'.join(self.devices)}
         """

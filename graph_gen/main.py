@@ -34,7 +34,11 @@ def main(ecstasy_api: EcstasyAPI, elastic_api: ElasticAPI):
     builder.create_initial_graph()
 
     # Отправка оповещений о петле
-    notify(records_count=len(all_records), nodes=list(builder.graph.nodes.values()))
+    notify(
+        records=all_records,
+        nodes=list(builder.graph.nodes.values()),
+        get_vlan_name=ecstasy_api.get_vlan_name,
+    )
 
     cache = get_cache()
     # Формирование графа нескольких уровней глубины.

@@ -1,10 +1,12 @@
 import json
 from pathlib import Path
+from typing import Callable
 
 from loguru import logger
 from pydantic import ValidationError
 
 from app.graph import Node
+from app.services.log_parser import Record
 from app.services.notifications.telegram import (
     TelegramNotificationSchema,
     TelegramNotificationBuilder,
@@ -13,12 +15,12 @@ from app.services.notifications.telegram import (
 from app.settings import settings
 
 
-def notify(*, records_count: int, nodes: list[Node]):
+def notify(*, records: list[Record], nodes: list[Node], get_vlan_name: Callable[[int], str] = lambda x: ""):
     """
     Отправка уведомлений обнаружения петель на сети.
     """
 
-    if records_count <= settings.records_count_notification_limit:
+    if len(records) <= settings.records_count_notification_limit:
         # Если количество уведомлений НЕ превышает лимит, то не отправляем.
         return
 
@@ -40,7 +42,7 @@ def notify(*, records_count: int, nodes: list[Node]):
             return
 
         builder = TelegramNotificationBuilder(
-            records_count=records_count, devices=[f"{d.name} ({d.ip})" for d in nodes]
+            records=records, devices=[f"{d.name} ({d.ip})" for d in nodes], get_vlan_name=get_vlan_name
         )
         notification = TelegramNotification(bots_config, builder)
         notification.notify_all()

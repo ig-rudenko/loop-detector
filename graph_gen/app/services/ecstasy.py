@@ -43,11 +43,30 @@ class EcstasyAPI:
         )
         if resp.status_code in [401, 403]:
             raise UnauthorizedException
-        return resp.json().get("interfaces", [])
+        try:
+            data = resp.json()
+        except requests.exceptions.JSONDecodeError:
+            return []
+        return data.get("interfaces", [])
 
     @auth_decorator
     def get_device_info(self, name_or_ip: str) -> dict:
         resp = self.session.get(f"{self.url}/device/api/{name_or_ip}/info")
         if resp.status_code in [401, 403]:
             raise UnauthorizedException
-        return resp.json()
+        try:
+            data = resp.json()
+        except requests.exceptions.JSONDecodeError:
+            return {}
+        return data
+
+    @auth_decorator
+    def get_vlan_name(self, vid: int) -> str:
+        resp = self.session.get(f"{self.url}/tools/api/vlan-desc?vlan={vid}")
+        if resp.status_code in [401, 403]:
+            raise UnauthorizedException
+        try:
+            data = resp.json()
+        except requests.exceptions.JSONDecodeError:
+            return ""
+        return data.get("name", "")
