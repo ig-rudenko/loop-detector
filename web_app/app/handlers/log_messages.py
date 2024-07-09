@@ -1,6 +1,7 @@
 from app.schemas.auth import UserSchema
 from app.schemas.log_messages import LogMessageSchema
 from app.services.auth import get_current_user
+from app.services.graph_storage import GraphStorage
 from app.services.log_messages import (
     get_current_log_messages,
     delete_current_log_messages,
@@ -24,7 +25,9 @@ async def delete_messages(user: UserSchema = Depends(get_current_user)):
     return Response(status_code=204)
 
 
-@router.get("/stored/{filename}", response_model=list[LogMessageSchema])
-def get_stored_messages(filename: str):
-    filename = filename.rstrip(".json")
-    return get_stored_log_messages(filename)
+@router.get("/stored/{name}", response_model=list[LogMessageSchema])
+def get_stored_messages(name: str, _: UserSchema = Depends(get_current_user)):
+    try:
+        return get_stored_log_messages(name)
+    except GraphStorage.GraphStorageException as exc:
+        raise HTTPException(status_code=500, detail=str(exc))

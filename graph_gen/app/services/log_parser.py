@@ -25,7 +25,7 @@ def get_unique_vlans(records: list[Record]) -> dict[int, int]:
     """Returns a dict of unique VLANs and their counts"""
     result: dict[int, int] = {}
     for record in records:
-        vlans: list[str] = re.findall(r"(!?=VLAN)\d{1,4}|(!?=v)\d{1,4}", record["message"])
+        vlans: list[str] = re.findall(r"(?<=VLAN)\d{1,4}|(?<=v)\d{1,4}", record["message"], re.IGNORECASE)
         for vlan in vlans:
             try:
                 vid = int(vlan)

@@ -3,7 +3,7 @@ from datetime import datetime
 from pathlib import Path
 
 from app.services.cache import get_cache
-from app.services.log_parser import Record
+from app.services.log_parser import Record, get_unique_vlans
 from app.settings import settings
 
 
@@ -40,8 +40,17 @@ class LogsRecorder:
         if self.has_new_logs:
             storage_path = Path(settings.storage)
             storage_path.mkdir(parents=True, exist_ok=True)
-            with (storage_path / f"{self._loop_name}_messages.json").open(mode="w") as file:
-                json.dump(records, file)
+            with (storage_path / f"{self._loop_name}_messages.json").open(mode="w", encoding="utf-8") as file:
+                json.dump(records, file, indent=4)
+            self._save_info_file(records, storage_path)
+
+    def _save_info_file(self, records: list[Record], storage_path: Path):
+        vlans: dict[int, int] = get_unique_vlans(records)
+        info = {"vlans": vlans, "messages_count": len(records)}
+        info_file = storage_path / f"{self._loop_name}_info.json"
+
+        with info_file.open(mode="w", encoding="utf-8") as file:
+            json.dump(info, file, indent=4)
 
     def get_loop_name(self):
         cache_key = "current_loop_name"
