@@ -73,6 +73,14 @@ class GraphService {
         }
     }
 
+    async deleteStoredGraph(name: string): Promise<void> {
+        try {
+            await api.delete(`/graph/stored/${name}`)
+        } catch (error: any) {
+            this.toastError(error);
+        }
+    }
+
 }
 
 export {GraphService};

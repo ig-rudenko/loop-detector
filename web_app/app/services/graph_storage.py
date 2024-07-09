@@ -59,3 +59,8 @@ class GraphStorage:
                 return json.load(f)
         except (OSError, json.JSONDecodeError):
             raise GraphStorage.GraphStorageException(f'Failed to load file {name}_messages.json')
+
+    def delete_storage_graph(self, name: str):
+        (self._graph_storage_dir / f"{name}.json").unlink(missing_ok=True)
+        (self._graph_storage_dir / f"{name}_info.json").unlink(missing_ok=True)
+        (self._graph_storage_dir / f"{name}_messages.json").unlink(missing_ok=True)
