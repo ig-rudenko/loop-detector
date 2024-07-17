@@ -10,7 +10,11 @@
 времени. При обнаружении петли, приложение предоставляет графическое отображение связей между устройствами,
 что позволяет легко локализовать проблему и определить, на каком оборудовании её искать.
 
-[Подробнее про GraphGen](https://github.com/ig-rudenko/loop-detector/tree/master/graph_gen#readme)
+Система состоит из трех приложений:
+
+1. GraphGen - генератор графов [Подробнее](https://github.com/ig-rudenko/loop-detector/tree/master/graph_gen#readme).
+2. WebApp - приложение на FastAPI для взаимодействия с графами через API.
+3. Frontend - Vue+TS+Vite
 
 ## Структура приложения
 
