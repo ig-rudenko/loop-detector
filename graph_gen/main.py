@@ -35,7 +35,7 @@ def main(ecstasy_api: EcstasyAPI, elastic_api: ElasticAPI):
 
     # Отправка оповещений о петле
     notify(
-        records=all_records,
+        records=new_logs_records,
         nodes=list(builder.graph.nodes.values()),
         get_vlan_name=ecstasy_api.get_vlan_name,
     )

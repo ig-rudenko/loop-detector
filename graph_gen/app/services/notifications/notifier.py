@@ -45,4 +45,7 @@ def notify(*, records: list[Record], nodes: list[Node], get_vlan_name: Callable[
             records=records, devices=[f"{d.name} ({d.ip})" for d in nodes], get_vlan_name=get_vlan_name
         )
         notification = TelegramNotification(bots_config, builder)
-        notification.notify_all()
+        try:
+            notification.notify_all()
+        except Exception as exc:
+            logger.error(f"Failed to notify via telegram: {exc}")
