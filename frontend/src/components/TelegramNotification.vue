@@ -13,8 +13,8 @@
 
       <template #title>
         <div class="flex align-items-center">
-          <img :src="'/api/v1/notifications/telegram/'+originalNotificationName+'/avatar'" class="mr-2 border-1 border-300 border-circle"
-                  style="width: 128px; height: 128px; z-index: 2" alt="avatar"/>
+          <img :src="botAvatar" class="mr-2 border-1 border-300 border-circle"
+                  style="width: 128px; height: 128px; z-index: 2" alt=""/>
           <Avatar label="No image" class="mr-2 absolute" style="width: 128px; height: 128px; z-index: 1" shape="circle" />
 
           <InputText v-if="botEditMode" v-model="notification.name"/>
@@ -163,6 +163,8 @@ import Badge from "primevue/badge/Badge.vue";
 import {defineComponent, PropType} from 'vue'
 import {TgNotification, Chat, TelegramNotificationsService} from "@/services/telegramNotifications";
 import errorFmt from "@/errorFmt";
+import api from "@/services/api.ts";
+import {AxiosResponse} from "axios";
 
 
 export default defineComponent({
@@ -177,6 +179,7 @@ export default defineComponent({
   data() {
       return {
         originalNotificationName: this.notification.name,
+        botAvatar: "",
 
         botEditMode: false,
         chatEditMode: false,
@@ -189,6 +192,10 @@ export default defineComponent({
         deleteBotDialogVisible: false,
         chatErrors: new Map() as Map<number,string>
       }
+  },
+
+  mounted() {
+    this.getBotAvatar()
   },
 
   methods: {
@@ -267,6 +274,22 @@ export default defineComponent({
           () => this.$emit("update")
       )
     },
+
+    getBotAvatar() {
+      const this_ = this
+      api.get('notifications/telegram/'+this.originalNotificationName+'/avatar',{
+        responseType: 'blob'
+      }).then(
+          (value: AxiosResponse<Blob>) => {
+            let reader = new FileReader();
+            reader.addEventListener("load", () => {
+              if (reader.result) this_.botAvatar = reader.result.toString();
+            }, false);
+            reader.readAsDataURL(value.data);
+          }
+      )
+    },
+
   }
 })
 </script>
