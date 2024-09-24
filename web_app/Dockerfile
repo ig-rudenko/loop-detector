@@ -1,8 +1,6 @@
-FROM python:3.12.6-slim AS builder
+FROM python:3.12.6-alpine AS builder
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl \
-    && rm -rf /var/lib/apt/lists/*
+RUN apk update && apk add curl
 
 # Устанавливаем Poetry
 RUN curl -sSL https://install.python-poetry.org | python -
