@@ -30,7 +30,7 @@ RUN addgroup -g 10001 appgroup \
     && chown -R app:app /app;
 
 # Копируем зависимости из builder-этапа
-COPY --from=builder /usr/local/lib/python3.13/site-packages /usr/local/lib/python3.13/site-packages
+COPY --from=builder /usr/local/lib/python3.12/site-packages /usr/local/lib/python3.12/site-packages
 COPY --from=builder /usr/local/bin /usr/local/bin
 
 WORKDIR /app
