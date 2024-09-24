@@ -1,17 +1,42 @@
-FROM python:3.12.3-alpine
-LABEL authors="irudenko"
+FROM python:3.13.0rc1-alpine AS builder
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Устанавливаем Poetry
+RUN curl -sSL https://install.python-poetry.org | python -
+
+# Добавляем Poetry в PATH
+ENV PATH="/root/.local/bin:$PATH"
+
+RUN pip install --upgrade --no-cache-dir pip;
 
 WORKDIR /app
-
-RUN pip install --upgrade --no-cache-dir pip && pip install poetry --no-cache-dir;
 
 COPY pyproject.toml poetry.lock /app/
 
 RUN poetry config virtualenvs.create false && \
-    poetry install --no-dev --no-interaction --no-ansi --no-cache;
+    poetry install --only main --no-interaction --no-ansi --no-cache;
 
-COPY . .
 
-ENTRYPOINT ["python"]
+FROM python:3.13.0rc1-alpine
+LABEL authors="irudenko"
 
-CMD ["main.py"]
+ENV PYTHONUNBUFFERED=1
+
+RUN addgroup -g 10001 appgroup \
+    && adduser -D -h /app -u 10002 app appgroup \
+    && chown -R app:app /app;
+
+# Копируем зависимости из builder-этапа
+COPY --from=builder /usr/local/lib/python3.13/site-packages /usr/local/lib/python3.13/site-packages
+COPY --from=builder /usr/local/bin /usr/local/bin
+
+WORKDIR /app
+
+COPY --chown=app:appgroup . .
+
+EXPOSE 8000
+
+CMD ["python", "main.py"]
