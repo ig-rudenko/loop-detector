@@ -1,4 +1,4 @@
-FROM python:3.13.0rc1-alpine AS builder
+FROM python:3.13.0rc2-slim AS builder
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
@@ -20,7 +20,7 @@ RUN poetry config virtualenvs.create false && \
     poetry install --only main --no-interaction --no-ansi --no-cache;
 
 
-FROM python:3.13.0rc1-alpine
+FROM python:3.13.0rc2-alpine
 LABEL authors="irudenko"
 
 ENV PYTHONUNBUFFERED=1
