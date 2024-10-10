@@ -2,40 +2,51 @@
 
 ![schema-GraphGen.svg](docs/schema-GraphGen.svg)
 
-Периодически читает логи сетевого оборудования из `ElasticSearch` и находит 
-в поле `message` совпадение строк "loop detected", "detect loop" или "loop guard".
+Периодически читает логи сетевого оборудования из `ElasticSearch` по правилу,
+которое записано в JSON файле (пример в `config/sample.es-matches.json`).
+Данный файл добавляется внутрь докер контейнера и указывается в переменных окружения ниже.
 
-Затем на основе полученных сообщений и IP-адреса оборудования строится граф. 
-С помощью приложения `Ecstasy` определяются интерфейсы оборудования, 
-которое отправило сообщение о петле, и находится порт, на котором была обнаружена петля.
+Затем на основе полученных сообщений и IP-адреса оборудования строится граф.
+С помощью приложения `Ecstasy` определяются интерфейсы оборудования,
+которые отправили сообщения о петле.
+Также находится порт, на котором была обнаружена петля.
 
 Данные графа добавляются в кэш `Redis` по ключу `currentLoop:depth=1`,
 Глубина графа может быть 1, 2 и 3.
 
 Переменные окружения (и значения по умолчанию):
 
-    LOG_LEVEL = "INFO"
-    LOOP_PERIOD = "2m"
-    STORAGE = "./storage"
-    NOTIFICATIONS_CONFIG = "./notifications.json"
+    LOG_LEVEL="INFO"
+    LOOP_PERIOD="2m"
+    
+    # Путь внутри контейнера (относительно папки /app)
+    STORAGE="./storage"
+    
     RECORDS_COUNT_NOTIFICATION_LIMIT=0
-
-    # ECSTASY
-    ECSTASY_URL
+    
+    # Путь внутри контейнера (относительно папки /app)
+    NOTIFICATIONS_CONFIG="./notifications.json"
+    
+    CACHE_TIMEOUT=300
+    
+    # Нужно указывать вместе со схемой (http или https)
+    ECSTASY_URL=http://
     ECSTASY_USERNAME
     ECSTASY_PASSWORD
-
-    # ElasticSearch
-    ES_HOST
-    ES_PORT = 9200
-    ES_INDEX
-    ES_TOKEN
-
-    # Redis
-    REDIS_HOST = ""
-    REDIS_PORT = 6379
-    REDIS_DB = 0
-    REDIS_PASSWORD = ""
+    
+    # Нужно указывать вместе со схемой (http или https)
+    ES_HOST=http://
+    ES_PORT=9200
+    ES_INDEX=
+    ES_TOKEN=
+    
+    # Путь внутри контейнера (относительно папки /app)
+    ES_MATCHES_FILE="./es-matches.json"
+    
+    REDIS_HOST=redis
+    REDIS_PORT=6379
+    REDIS_DB=0
+    REDIS_PASSWORD=""
 
 Пример файла находится в папке `env/sample.env`.
 
@@ -45,11 +56,11 @@
 
 `LOG_LEVEL` (default "INFO") - уровень логирования ("DEBUG", "INFO", "ERROR")
 
-`LOOP_PERIOD` (default "2m") - период опроса логов. Если указано `2m`, 
+`LOOP_PERIOD` (default "2m") - период опроса логов. Если указано `2m`,
 то каждые 2 минуты будет опрашиваться elasticsearch в поисках новых логов
 за последние 2 минуты. Необходимо указывать в формате 30s, 2m, 1h.
 
-`STORAGE` (default "./storage") - папка хранения файлов графов петель. 
+`STORAGE` (default "./storage") - папка хранения файлов графов петель.
 В неё будут храниться json файлы со структурой графа, сообщениями и метаданными.
 
 `NOTIFICATIONS_CONFIG` (default "./notifications.json") - файл с настройками оповещений.
@@ -70,6 +81,8 @@
 `ES_INDEX` - шаблон индекса(ов) для поиска логов, можно использовать `*`, например: `netlogs*`.
 
 `ES_TOKEN` - токен для подключения к elasticsearch, который имеет доступ на просмотр `ES_INDEX`.
+
+`ES_MATCHES_FILE` - JSON файл, в котором содержится правила для поиска в elasticsearch сообщений о петлях
 
 `REDIS_HOST` - IP или домен Redis.
 
