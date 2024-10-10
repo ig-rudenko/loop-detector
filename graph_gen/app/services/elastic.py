@@ -1,5 +1,4 @@
 import json
-from pathlib import Path
 
 import requests
 
@@ -22,9 +21,9 @@ class ElasticAPI:
 
     @staticmethod
     def _load_match_patterns():
-        if not Path(settings.records_patterns_file_path).exists():
+        if not settings.es_matches_file_path.exists():
             raise FileNotFoundError(f"Файл с выражениями поиска не найден: ({settings.records_patterns_file_path})")
-        with open(settings.records_patterns_file_path, "r") as file:
+        with settings.es_matches_file_path.open("r") as file:
             return json.load(file)
 
     def get_loop_logs(self, period: str, index_name: str):

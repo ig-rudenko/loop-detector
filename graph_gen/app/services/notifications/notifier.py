@@ -1,5 +1,4 @@
 import json
-from pathlib import Path
 from typing import Callable
 
 from loguru import logger
@@ -25,7 +24,7 @@ def notify(*, records: list[Record], nodes: list[Node], get_vlan_name: Callable[
         return
 
     try:
-        with open(Path(settings.notifications_config), encoding="utf-8") as f:
+        with settings.notifications_config_path.open(encoding="utf-8") as f:
             config = json.load(f)
     except (FileNotFoundError, PermissionError, json.JSONDecodeError) as exc:
         logger.error(f"Invalid notifications config: {exc}")

@@ -8,9 +8,9 @@ class _Config(BaseSettings):
 
     storage: str
     notifications_config: str
+    es_matches_file: str
 
     records_count_notification_limit: int = 0
-    records_patterns_file_path: str
 
     cache_timeout: int = 300
 
@@ -34,6 +34,18 @@ class _Config(BaseSettings):
     redis_port: int = 6379
     redis_db: int = 0
     redis_password: str = ""
+
+    @property
+    def storage_path(self):
+        return self.base_dir / self.storage
+
+    @property
+    def notifications_config_path(self):
+        return self.base_dir / self.notifications_config
+
+    @property
+    def es_matches_file_path(self):
+        return self.base_dir / self.es_matches_file
 
 
 settings = _Config()

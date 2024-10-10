@@ -38,11 +38,10 @@ class LogsRecorder:
 
     def _save_to_file(self, records: list[Record]):
         if self.has_new_logs:
-            storage_path = Path(settings.storage)
-            storage_path.mkdir(parents=True, exist_ok=True)
-            with (storage_path / f"{self._loop_name}_messages.json").open(mode="w", encoding="utf-8") as file:
+            settings.storage_path.mkdir(parents=True, exist_ok=True)
+            with (settings.storage_path / f"{self._loop_name}_messages.json").open(mode="w", encoding="utf-8") as file:
                 json.dump(records, file, indent=4)
-            self._save_info_file(records, storage_path)
+            self._save_info_file(records, settings.storage_path)
 
     def _save_info_file(self, records: list[Record], storage_path: Path):
         vlans: dict[int, int] = get_unique_vlans(records)
