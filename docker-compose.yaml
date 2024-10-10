@@ -57,6 +57,7 @@ services:
     volumes:
       - "./loop_storage:/app/loop_storage"
       - "./notifications.json:/app/notifications.json:ro"
+      - "./es-matches.json:/app/es-matches.json:ro"
 
       - "/etc/timezone:/etc/timezone:ro"
       - "/etc/localtime:/etc/localtime:ro"

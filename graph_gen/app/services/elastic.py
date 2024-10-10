@@ -1,4 +1,9 @@
+import json
+from pathlib import Path
+
 import requests
+
+from app.settings import settings
 
 
 class ElasticAPI:
@@ -13,6 +18,14 @@ class ElasticAPI:
                 "Accept": "application/json",
             }
         )
+        self._match_patterns = self._load_match_patterns()
+
+    @staticmethod
+    def _load_match_patterns():
+        if not Path(settings.records_patterns_file_path).exists():
+            raise FileNotFoundError(f"Файл с выражениями поиска не найден: ({settings.records_patterns_file_path})")
+        with open(settings.records_patterns_file_path, "r") as file:
+            return json.load(file)
 
     def get_loop_logs(self, period: str, index_name: str):
         """
@@ -29,8 +42,7 @@ class ElasticAPI:
             return {}
         return resp.json()
 
-    @staticmethod
-    def get_search_params(period: str):
+    def get_search_params(self, period: str):
         return {
             "query": {
                 "bool": {
@@ -44,13 +56,7 @@ class ElasticAPI:
                             }
                         },
                         {
-                            "bool": {
-                                "should": [
-                                    {"match_phrase": {"message": "loop detected"}},
-                                    {"match_phrase": {"message": "detect loop"}},
-                                    {"match_phrase": {"message": "loop guard"}},
-                                ]
-                            }
+                            "bool": self._match_patterns
                         },
                     ]
                 }

@@ -1,0 +1,19 @@
+{
+  "should": [
+    {
+      "match_phrase": {
+        "message": "loop detected"
+      }
+    },
+    {
+      "match_phrase": {
+        "message": "detect loop"
+      }
+    },
+    {
+      "match_phrase": {
+        "message": "loop guard"
+      }
+    }
+  ]
+}
