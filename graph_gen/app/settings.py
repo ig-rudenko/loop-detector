@@ -6,11 +6,11 @@ from pydantic_settings import BaseSettings
 class _Config(BaseSettings):
     base_dir: Path = Path(__file__).parent.parent
 
-    storage: str = (base_dir / "storage").absolute().as_posix()
-    notifications_config: str = (base_dir / "notifications.json").absolute().as_posix()
+    storage: str
+    notifications_config: str
 
     records_count_notification_limit: int = 0
-    records_patterns_file_path: str = (base_dir / "sample.es-matches.json").absolute().as_posix()
+    records_patterns_file_path: str
 
     cache_timeout: int = 300
 
