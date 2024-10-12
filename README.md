@@ -1,6 +1,6 @@
 ## Loop Detector
 
-![techs](https://skillicons.dev/icons?i=py,redis,fastapi,vue,vite,ts,docker)
+![techs](https://skillicons.dev/icons?i=elasticsearch,py,redis,fastapi,vue,vite,ts,docker)
 
 ---
 
