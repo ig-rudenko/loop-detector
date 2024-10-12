@@ -81,3 +81,15 @@ docker compose up -d
 
 Приложение будет сохранять граф петель и его сообщения в json файлы.
 Хранилище по умолчанию указано как `./loop_storage`.
+
+
+## Визуализация
+
+![img.png](docs/img/img.png)
+
+![img.png](docs/img/img_1.png)
+
+![img.png](docs/img/img_2.png)
+
+![img.png](docs/img/img_3.png)
+
