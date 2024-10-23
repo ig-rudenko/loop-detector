@@ -3,6 +3,10 @@ import re
 from datetime import datetime
 from typing import TypedDict, Generator
 
+import jq
+
+from app.settings import settings
+
 Host = TypedDict("Host", {"ip": str})
 Record = TypedDict("Record", {"@timestamp": str, "message": str, "host": Host})
 
@@ -14,7 +18,18 @@ def get_loop_data_from_file(filename: str) -> dict:
 
 
 def get_records(data: dict) -> list[Record]:
-    return [r["_source"] for r in data["hits"]["hits"]]
+    result = []
+    for row in data["hits"]["hits"]:
+        device_ip = str(jq.first(settings.es_field_device_ip, row["_source"]))
+        message = str(jq.first(settings.es_field_message, row["_source"]))
+
+        result.append({
+            "@timestamp": row["_source"]["@timestamp"],
+            "message": message,
+            "host": {"ip": device_ip},
+        })
+
+    return result
 
 
 def get_unique_ips(records: list[Record]) -> list[str]:
