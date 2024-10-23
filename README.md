@@ -1,6 +1,6 @@
 ## Loop Detector
 
-![techs](https://skillicons.dev/icons?i=py,redis,fastapi,vue,vite,ts,docker)
+![techs](https://skillicons.dev/icons?i=elasticsearch,py,redis,fastapi,vue,vite,ts,docker)
 
 ---
 
@@ -9,6 +9,8 @@
 Приложение обрабатывает логи, поступающие от сетевого оборудования, и определяет наличие петель в реальном
 времени. При обнаружении петли, приложение предоставляет графическое отображение связей между устройствами,
 что позволяет легко локализовать проблему и определить, на каком оборудовании её искать.
+
+![schema](/docs/notification-schema.svg)
 
 Система состоит из трех приложений:
 
@@ -79,3 +81,15 @@ docker compose up -d
 
 Приложение будет сохранять граф петель и его сообщения в json файлы.
 Хранилище по умолчанию указано как `./loop_storage`.
+
+
+## Визуализация
+
+![img.png](docs/img/img.png)
+
+![img.png](docs/img/img_1.png)
+
+![img.png](docs/img/img_2.png)
+
+![img.png](docs/img/img_3.png)
+
