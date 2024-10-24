@@ -29,8 +29,11 @@ class _Config(BaseSettings):
     es_index: str
     es_token: str
 
-    es_field_device_ip: str = ".host.ip"
-    es_field_message: str = ".message"
+    es_jq_device_ip: str = ".host.ip"
+    es_jq_message: str = ".message"
+
+    es_field_device_ip: str = "host"
+    es_field_message: str = "message"
 
     # Redis
     redis_host: str = ""

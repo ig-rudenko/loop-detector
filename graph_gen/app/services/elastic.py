@@ -1,7 +1,6 @@
 import json
 
 import requests
-
 from app.settings import settings
 
 
@@ -61,5 +60,5 @@ class ElasticAPI:
                 }
             },
             "size": 10000,
-            "_source": ["@timestamp", "message", "host"],
+            "_source": ["@timestamp", settings.es_field_device_ip, settings.es_field_message],
         }
