@@ -30,7 +30,7 @@ class TelegramBot:
 
     async def get_bot_avatar(self) -> bytes:
         if self._info is None:
-            await self.get_info()
+            self._info = await self.get_info()
 
         async with aiohttp.ClientSession() as session:
             async with session.get(

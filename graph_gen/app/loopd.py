@@ -9,7 +9,7 @@ from app.services.traceroute import find_next_device
 class GraphLoopBuilder:
 
     def __init__(self, elastic_api: ElasticAPI, ecstasy_api: EcstasyAPI):
-        self._devices_nodes = {}
+        self._devices_nodes: dict = {}
         # devices_nodes = {
         #     "ip": {
         #         "interfaces": {},

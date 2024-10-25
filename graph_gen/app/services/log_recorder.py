@@ -51,7 +51,7 @@ class LogsRecorder:
         with info_file.open(mode="w", encoding="utf-8") as file:
             json.dump(info, file, indent=4)
 
-    def get_loop_name(self):
+    def get_loop_name(self) -> str:
         cache_key = "current_loop_name"
         cached_name: str | None = self._cache.get(cache_key)
         if cached_name is None:

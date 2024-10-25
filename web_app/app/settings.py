@@ -17,5 +17,5 @@ class _Config(BaseSettings):
     redis_password: str = ""
 
 
-settings = _Config()
+settings = _Config()  # type: ignore
 Path(settings.graph_storage).mkdir(parents=True, exist_ok=True)

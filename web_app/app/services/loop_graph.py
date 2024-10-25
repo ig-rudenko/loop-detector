@@ -18,8 +18,8 @@ async def get_current_loop(depth: int = 1) -> GraphSchema:
     """
     cache = get_cache()
     key = f"currentLoop:depth={depth}"
-    data: dict = await cache.get(key)
-    if data:
+    data: dict | None = await cache.get(key)
+    if data is not None:
         try:
             return GraphSchema.model_validate(data)
         except ValueError as e:

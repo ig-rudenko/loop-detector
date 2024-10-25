@@ -54,4 +54,4 @@ class _Config(BaseSettings):
         return self.base_dir / self.es_matches_file
 
 
-settings = _Config()
+settings = _Config()  # type: ignore

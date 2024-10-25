@@ -39,7 +39,7 @@ class LoggingMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next: Callable) -> Response:
 
         request_id: str = str(uuid4())
-        logging_dict = {
+        logging_dict: dict = {
             "X-API-REQUEST-ID": request_id  # X-API-REQUEST-ID maps each request-response to a unique ID
         }
 
@@ -64,8 +64,8 @@ class LoggingMiddleware(BaseHTTPMiddleware):
                 "query": request.query_params,
             },
             "client": {
-                "address": request.client.host,
-                "port": request.client.port,
+                "address": request.client.host if request.client else "",
+                "port": request.client.port if request.client else "",
             },
             "user_agent": {
                 "original": request.headers.get("User-Agent"),

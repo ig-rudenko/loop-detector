@@ -9,7 +9,7 @@ class Interface:
     status: str
     desc: str
     vlans: list[int]
-    messages: list[dict[str, str]] = field(default_factory=list)
+    messages: list[dict[str, str | datetime]] = field(default_factory=list)
 
 
 @dataclass
@@ -37,9 +37,7 @@ class GraphData(TypedDict):
 
 class Graph:
     def __init__(self, nodes: list[Node], edges: list[Edge]):
-        self._nodes: dict[str, Node] = {
-            node.name: node for node in nodes
-        }  # Список всех узлов
+        self._nodes: dict[str, Node] = {node.name: node for node in nodes}  # Список всех узлов
         self._edges = edges  # Список всех ребер
 
         self._graph_multiplier = 1  # Множитель графа
@@ -96,7 +94,8 @@ class Graph:
             "font": {"color": "black"},
         }
 
-    def _get_node_title(self, node: Node) -> str:
+    @staticmethod
+    def _get_node_title(node: Node) -> str:
         return f"{node.name} (<strong>{node.ip}</strong>)"
 
     def _get_edge_properties(self, edge: Edge) -> dict[str, Any]:

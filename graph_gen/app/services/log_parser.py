@@ -21,12 +21,12 @@ def get_records(data: dict) -> list[Record]:
     for row in data["hits"]["hits"]:
         device_ip = str(jq.first(settings.es_jq_device_ip, row["_source"]))
         message = str(jq.first(settings.es_jq_message, row["_source"]))
-
-        result.append({
+        record: Record = {
             "@timestamp": row["_source"]["@timestamp"],
             "message": message,
             "host": {"ip": device_ip},
-        })
+        }
+        result.append(record)
 
     return result
 

@@ -12,7 +12,7 @@ from app.services.logging import setup_logger
 from app.settings import settings
 
 setup_logger(settings.log_level)
-server.logger = logger
+server.logger = logger  # type: ignore
 app = FastAPI()
 app.add_middleware(LoggingMiddleware, logger=logger)
 
