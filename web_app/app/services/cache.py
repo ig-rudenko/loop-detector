@@ -5,9 +5,10 @@ from datetime import datetime, timedelta
 from functools import wraps
 from typing import Any, Optional, TypedDict, Callable
 
+from redis.asyncio import Redis
+
 from app.services.decorators import singleton
 from app.settings import settings
-from redis.asyncio import Redis
 
 logger = logging.getLogger(__name__)
 
@@ -99,10 +100,10 @@ class RedisCache(AbstractCache):
             return pickle.loads(value)
         return None
 
-    async def set(self, key: str, value: Any, expire: int) -> None:
+    async def set(self, key: str, value: Any, timeout: int) -> None:
         logger.debug("Set to cache %s", key)
 
-        await self._redis.set(key, pickle.dumps(value), ex=expire)
+        await self._redis.set(key, pickle.dumps(value), ex=timeout)
 
     async def delete(self, key: str) -> None:
         logger.debug("Delete_ from cache %s", key)

@@ -14,8 +14,9 @@
 
 <script lang="ts">
 import {defineComponent, PropType} from "vue";
-import {MessagesAnalyzer} from "@/services/messages.analyzer.ts";
-import {DetailMessage} from "@/types.ts";
+
+import {DetailMessage} from "@/types";
+import {MessagesAnalyzer} from "@/services/messages.analyzer";
 
 export default defineComponent({
   name: "MessagesInfo",
@@ -33,10 +34,7 @@ export default defineComponent({
 
   methods: {
     getVlansInfo() {
-      const data = this.msgAnalyzer.getVlansInfo()
-      console.log("getVlansInfo")
-      console.log(data)
-      return data
+      return this.msgAnalyzer.getVlansInfo()
     }
   }
 })
