@@ -6,8 +6,6 @@
 
     <SplitterPanel style="overflow: auto" :size="35">
       <div>
-<!--        <div v-if="selected.node" class="p-2">{{ selected.node }}</div>-->
-
         <MessagesTable v-if="selected.messages.length"
                        :messages="selected.messages" :header="selectedMessagesHeader"/>
         <div v-else class="p-3">
@@ -23,7 +21,6 @@
   <div v-else class="flex justify-content-center">
     <div>
       <h1 class="text-center">Нет петель на сети!</h1>
-      <!--      <img src="/img/graph-icon.png"/>-->
     </div>
   </div>
 

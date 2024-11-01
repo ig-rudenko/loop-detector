@@ -4,7 +4,7 @@
     VLAN, где замечена петля:
   </div>
 
-  <div class="flex gap-3">
+  <div class="flex flex-wrap gap-x-4 gap-3">
     <div v-for="info in getVlansInfo()">
       <Badge severity="info" style="font-size: 1rem;">v{{info[0]}}</Badge> Кол-во: {{info[1]}}
     </div>

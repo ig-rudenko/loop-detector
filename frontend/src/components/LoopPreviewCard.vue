@@ -7,11 +7,11 @@
     </div>
 
     <!--NAME-->
-    <div @click="$router.push('/loop/stored/'+graphData.name)"
-         class="flex gap-2 font-bold text-xl mb-2 align-items-center cursor-pointer">
+    <router-link :to="{ name: 'loop', params: { name: graphData.name } }"
+         class="no-underline text-gray-900 flex gap-2 font-bold text-xl mb-2 align-items-center cursor-pointer">
       <i class="pi pi-share-alt text-xl"></i>
       {{ graphData.name }}
-    </div>
+    </router-link>
     <div class="py-2"><i class="pi pi-calendar mr-2"/>{{ modTime }}</div>
 
     <div v-if="graphData.info" class="flex flex-wrap gap-2">

@@ -15,7 +15,7 @@ const router = createRouter({
         {path: "/login", component: Login},
         {path: "/loops/current", component: CurrentLoop},
         {path: "/loops/history", component: LoopsHistory},
-        {path: "/loop/stored/:name", component: LoopGraph, name: "storedLoop"},
+        {path: "/loop/stored/:name", component: LoopGraph, name: "loop"},
         {path: "/notifications", component: Notifications, name: "notifications"}
     ],
 });
