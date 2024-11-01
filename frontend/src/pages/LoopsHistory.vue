@@ -62,7 +62,7 @@ export default defineComponent({
     <GraphsHistoryChart v-if="history.length" :data="history"/>
 
     <h1 class="text-center">Список петель, которые хранятся</h1>
-    <div v-if="storedGraphs" class="flex py-4 gap-3 flex-wrap justify-content-center align-items-center">
+    <div v-if="storedGraphs" class="flex py-4 gap-3 flex-wrap justify-content-center ">
       <LoopPreviewCard v-for="info in storedGraphs.results" :graph-data="info" @delete="deleteLoop(info.name)"/>
     </div>
     <div v-else class="flex justify-content-center">

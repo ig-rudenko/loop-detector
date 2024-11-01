@@ -1,5 +1,5 @@
 <template>
-  <div class="border-round p-5 h-full max-w-25rem zoomin hover:shadow-5 bg-white-alpha-50 hover:bg-white-alpha-80 relative"
+  <div class="border-round p-5 w-30rem zoomin hover:shadow-5 bg-white-alpha-50 hover:bg-white-alpha-80 relative"
        :class="cardClasses">
     <!--DELETE-->
     <div v-if="user?.isSuperuser" class="absolute" style="right: 0; top: 0">
@@ -14,13 +14,12 @@
     </div>
     <div class="py-2"><i class="pi pi-calendar mr-2"/>{{ modTime }}</div>
 
-    <div v-if="graphData.info" class="flex flex-wrap gap-1">
-      <div v-for="vlan in graphData.info.vlans">
+    <div v-if="graphData.info" class="flex flex-wrap gap-2">
+      <div v-for="vlan in graphData.info.vlans.sort((a, b) => Number(b.count) - Number(a.count))">
         <Badge severity="danger" class="text-sm">v{{ vlan.vid }}</Badge>
         <small class="text-sm">/{{ vlan.count }}</small>
       </div>
     </div>
-    <InlineMessage v-if="graphInfoError" v-tooltip.top="graphInfoError">Ошибка загрузки `info`</InlineMessage>
   </div>
 
   <Dialog v-model:visible="showModalDelete" class="pt-2" :show-header="false" modal :style="{ width: '25rem' }">
@@ -56,7 +55,6 @@ export default defineComponent({
 
   data() {
     return {
-      graphInfoError: "",
       showModalDelete: false
     }
   },

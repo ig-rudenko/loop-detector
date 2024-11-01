@@ -1,5 +1,5 @@
 <template>
-<div id="graph-vis"></div>
+  <div id="graph-vis"></div>
 
   <OverlayPanel ref="graphHistoryLoopPanel">
     <LoopPreviewCard v-if="selectedLoop" :graph-data="selectedLoop" />
@@ -48,7 +48,12 @@ export default defineComponent({
       )
     }
 
-    this.timeline = new Timeline(container, this.graphData, {locale: "ru_RU"})
+    const options = {
+      height: 400,
+      locale: "ru_RU",
+    }
+
+    this.timeline = new Timeline(container, this.graphData, options)
     this.timeline.on(
         "click",
         (action: any) => {
