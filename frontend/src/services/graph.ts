@@ -1,8 +1,9 @@
 import {Edge} from "vis-network";
 import {Data} from "vis-network/declarations/network/Network";
+
 import api from "@/services/api";
-import getVerboseAxiosError from "@/errorFmt.ts";
-import {ToastServiceMethods} from "primevue/toastservice";
+import errorFmt from "@/errorFmt";
+import {errorToast} from "@/services/my.toast";
 
 
 export interface Message {
@@ -18,47 +19,35 @@ export interface GraphData extends Data {
     edges?: EdgeData[];
 }
 
+interface GraphInfo {
+    messagesCount: number
+    vlans: { vid: number, count: number }[]
+}
 
-export interface StoredGraphFile {
+export interface StoredGraph {
     name: string;
     modTime: string;
 }
 
+export interface StoredGraphInfo extends StoredGraph {
+    info: GraphInfo
+}
+
+export interface PaginatedStoredGraphInfo {
+    count: number
+    results: StoredGraphInfo[]
+}
 
 class GraphService {
-    private toast: ToastServiceMethods;
-
-    constructor(toast: ToastServiceMethods) {
-        this.toast = toast;
-    }
-
-    private toastError(error: any) {
-        this.toast.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: getVerboseAxiosError(error),
-            life: 5000
-        });
-    }
+    private graphsInfo: Map<string, GraphInfo> = new Map<string, GraphInfo>();
 
     async getCurrentGraph(depth: number = 1): Promise<GraphData> {
         try {
             const resp = await api.get<GraphData>("/graph/current?depth=" + depth);
             return resp.data;
         } catch (error: any) {
-            this.toastError(error);
+            errorToast("Ошибка загрузки графа", errorFmt(error))
             return {nodes: [], edges: []};
-        }
-    }
-
-    async getStoredGraphs(): Promise<StoredGraphFile[]> {
-        try {
-            const resp = await api.get<StoredGraphFile[]>("/graph/stored");
-            return resp.data;
-
-        } catch (error: any) {
-            this.toastError(error);
-            return [];
         }
     }
 
@@ -68,8 +57,43 @@ class GraphService {
             return resp.data;
 
         } catch (error: any) {
-            this.toastError(error);
+            errorToast("Ошибка загрузки графа", errorFmt(error))
             return {nodes: [], edges: []};
+        }
+    }
+
+    async getStoredGraphInfo(name: string): Promise<GraphInfo|null> {
+        const graph = this.graphsInfo.get(name);
+        if (graph) return graph;
+
+        try {
+            const resp = await api.get<GraphInfo>("/graph-info/" + name);
+            this.graphsInfo.set(name, resp.data);
+            return resp.data;
+        } catch (error: any) {
+            errorToast("Ошибка загрузки графа", errorFmt(error))
+            return null;
+        }
+    }
+
+    async getStoredGraphsInfoPage(page: number, perPage: number): Promise<PaginatedStoredGraphInfo|null> {
+        const url = `/graph/stored?page=${page}&size=${perPage}`
+        try {
+            const resp = await api.get<PaginatedStoredGraphInfo>(url);
+            return resp.data;
+        } catch (error: any) {
+            errorToast("Ошибка загрузки графа", errorFmt(error))
+            return null;
+        }
+    }
+
+    async getGraphsHistory(): Promise<StoredGraph[]> {
+        try {
+            const resp = await api.get<StoredGraph[]>("/graph/history");
+            return resp.data;
+        } catch (error: any) {
+            errorToast("Ошибка загрузки истории графа", errorFmt(error))
+            return [];
         }
     }
 
@@ -77,10 +101,10 @@ class GraphService {
         try {
             await api.delete(`/graph/stored/${name}`)
         } catch (error: any) {
-            this.toastError(error);
+            errorToast("Ошибка удаления истории графа", errorFmt(error))
         }
     }
 
 }
 
-export {GraphService};
+export const graphService = new GraphService();

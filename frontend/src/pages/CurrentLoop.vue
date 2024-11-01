@@ -45,14 +45,15 @@
 import {defineComponent} from 'vue';
 import Graph from "@/components/Graph.vue";
 import Menu from "@/components/Menu.vue";
-import {GraphData, GraphService} from "@/services/graph";
+import {GraphData, graphService} from "@/services/graph";
 import {mapState} from "vuex";
 import FullMessagesTable from "@/components/FullMessagesTable.vue";
-import api from "@/services/api.ts";
+import api from "@/services/api";
 import {DetailMessage} from "@/types.ts";
 import getVerboseAxiosError from "@/errorFmt.ts";
 import {AxiosError} from "axios";
 import MessagesInfo from "@/components/MessagesInfo.vue";
+import messagesService from "@/services/messages.service.ts";
 
 export default defineComponent({
   name: "LoopGraph",
@@ -63,7 +64,6 @@ export default defineComponent({
       graphData: null as GraphData | null,
       loadingGraphData: true,
       depth: 1,
-      graphService: new GraphService(this.$toast),
 
       visibleMessagesDialog: false,
       currentMessages: [] as DetailMessage[],
@@ -89,15 +89,11 @@ export default defineComponent({
   },
 
   methods: {
-    getGraphData(): void {
+    getGraphData() {
       this.loadingGraphData = true;
-      this.graphService.getCurrentGraph(this.depth)
+      graphService.getCurrentGraph(this.depth)
           .then(data => {
             this.graphData = data;
-            this.loadingGraphData = false;
-          })
-          .catch((error: AxiosError) => {
-            this.toastError(error);
             this.loadingGraphData = false;
           })
     },
@@ -108,32 +104,12 @@ export default defineComponent({
     },
 
     getCurrentMessages() {
-      api.get<DetailMessage[]>("/messages/")
-          .then(value => this.currentMessages = value.data)
-          .catch((error: AxiosError) => this.toastError(error))
+      messagesService.getCurrentMessages().then(value => this.currentMessages = value)
     },
 
     deleteCurrentMessages() {
-      api.delete("/messages/").then(
-          () => {
-            this.$toast.add({
-              severity: 'success',
-              summary: 'Удалено',
-              detail: "Все сообщения были удалены",
-              life: 5000
-            })
-          }
-      ).catch((error: AxiosError) => this.toastError(error))
+      messagesService.deleteCurrentMessages()
     },
-
-    toastError(error: AxiosError) {
-      this.$toast.add({
-        severity: 'error',
-        summary: 'Error',
-        detail: getVerboseAxiosError(error),
-        life: 5000
-      })
-    }
 
   }
 })

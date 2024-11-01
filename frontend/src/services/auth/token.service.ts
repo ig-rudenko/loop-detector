@@ -1,6 +1,31 @@
-import {UserTokens} from "@/services/user";
+import {UserTokens} from "@/services/user.ts";
+import axios from "axios";
+import store from "@/store";
+import router from "@/router.ts";
 
-class TokenService {
+export async function refreshAccessToken() {
+    const refreshToken = tokenService.getLocalRefreshToken()
+    if (!refreshToken) return;
+
+    const rs = await axios.post(
+        "/api/v1/auth/token/refresh",
+        {refresh: refreshToken},
+    )
+
+    if (rs.status !== 200) {
+        await store.dispatch("auth/logout")
+        await router.push("/login");
+        return false
+    }
+
+    const {access, refresh} = rs.data;
+    // Обновляем access и refresh токены.
+    await store.dispatch('auth/refreshTokens', rs.data);
+    tokenService.updateLocalTokens(access, refresh);
+    return true
+}
+
+export class TokenService {
     getLocalRefreshToken() {
         const user = this.getUserTokens();
         return user.refreshToken;
@@ -35,5 +60,6 @@ class TokenService {
         return new UserTokens()
     }
 }
+const tokenService = new TokenService();
 
-export default new TokenService();
+export {tokenService}

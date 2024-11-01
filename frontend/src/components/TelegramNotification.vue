@@ -61,7 +61,7 @@
 
             <div class="flex-auto">
               <label for="new-chat-id" class="font-bold block mb-2">ID:</label>
-              <InputText id="new-chat-id" style="font-family: monospace" v-model="newChat.id" class="w-full"/>
+              <InputNumber id="new-chat-id" style="font-family: monospace" v-model="newChat.id" :useGrouping="false" class="w-full"/>
             </div>
 
             <div class="flex-auto">
@@ -161,9 +161,9 @@
 import Textarea from "primevue/textarea";
 import Badge from "primevue/badge/Badge.vue";
 import {defineComponent, PropType} from 'vue'
-import {TgNotification, Chat, TelegramNotificationsService} from "@/services/telegramNotifications";
+import telegramNotificationService, {TgNotification, Chat} from "@/services/telegramNotifications";
 import errorFmt from "@/errorFmt";
-import api from "@/services/api.ts";
+import api from "@/services/api";
 import {AxiosResponse} from "axios";
 
 
@@ -172,7 +172,6 @@ export default defineComponent({
   components: {Badge, Textarea},
   props: {
     notification: {required: true, type: Object as PropType<TgNotification>},
-    notificationService: {required: true, type: Object as PropType<TelegramNotificationsService>}
   },
   emits: ["update"],
 
@@ -207,7 +206,7 @@ export default defineComponent({
     },
     deleteChat() {
       if (this.selectedChat) {
-        this.notificationService.deleteChat(this.originalNotificationName, this.selectedChat.id).then(
+        telegramNotificationService.deleteChat(this.originalNotificationName, this.selectedChat.id).then(
             () => {
               this.$emit("update");
               this.deleteChatDialogVisible = false;
@@ -216,7 +215,7 @@ export default defineComponent({
       }
     },
     updateChat(chat: Chat) {
-      this.notificationService.updateChat(this.originalNotificationName, chat).then(
+      telegramNotificationService.updateChat(this.originalNotificationName, chat).then(
           () => {
             this.chatEditMode = false;
             this.$emit("update");
@@ -224,7 +223,7 @@ export default defineComponent({
       )
     },
     addNewChat() {
-      this.notificationService.addChat(this.originalNotificationName, this.newChat).then(
+      telegramNotificationService.addChat(this.originalNotificationName, this.newChat).then(
           () => {
             this.sendTestMessage(this.newChat)
             this.$emit("update");
@@ -234,20 +233,11 @@ export default defineComponent({
       )
     },
     sendTestMessage(chat: Chat) {
-      this.notificationService.sendTestMessage(this.originalNotificationName, chat.id).then(
-          () => {
-              this.$toast.add({
-                severity: 'success',
-                summary: 'Отправлено',
-                detail: 'Проверьте чат',
-                life: 5000
-              });
-              this.chatErrors.delete(chat.id)
-          }
+      telegramNotificationService.sendTestMessage(this.originalNotificationName, chat.id).then(
+          () => this.chatErrors.delete(chat.id)
       ).catch(
           (error) => {
             const verboseError = errorFmt(error)
-            console.log(verboseError)
             this.chatErrors.set(chat.id, verboseError)
           }
       )
@@ -255,7 +245,7 @@ export default defineComponent({
 
 
     updateBot() {
-      this.notificationService.updateBot(
+      telegramNotificationService.updateBot(
           this.originalNotificationName,
           this.notification.name,
           this.newBotToken,
@@ -270,7 +260,7 @@ export default defineComponent({
       )
     },
     deleteBot() {
-      this.notificationService.deleteBot(this.originalNotificationName).then(
+      telegramNotificationService.deleteBot(this.originalNotificationName).then(
           () => this.$emit("update")
       )
     },

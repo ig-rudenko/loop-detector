@@ -1,8 +1,8 @@
-import api from "@/services/api.ts";
-import {useToast} from "primevue/usetoast";
-import getVerboseAxiosError from "@/errorFmt.ts";
-import {ToastServiceMethods} from "primevue/toastservice";
 import {AxiosResponse} from "axios";
+
+import api from "@/services/api";
+import getVerboseAxiosError from "@/errorFmt";
+import {errorToast, successToast} from "@/services/my.toast";
 
 
 export interface Chat {
@@ -18,20 +18,6 @@ export interface TgNotification {
 }
 
 export class TelegramNotificationsService {
-    private toast: ToastServiceMethods;
-
-    constructor() {
-        this.toast = useToast()
-    }
-
-    private toastError(error: any): void {
-        this.toast.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: getVerboseAxiosError(error),
-            life: 7000
-        });
-    }
 
     async addBot(name: string, token: string, description: string): Promise<void> {
         try {
@@ -40,8 +26,8 @@ export class TelegramNotificationsService {
                 token: token,
                 description: description,
             })
-        } catch (error) {
-            this.toastError(error)
+        } catch (error: any) {
+            errorToast('Ошибка создания бота', getVerboseAxiosError(error))
             throw error
         }
     }
@@ -54,8 +40,8 @@ export class TelegramNotificationsService {
 
         try {
             await api.patch("/notifications/telegram/" + notificationName, updateData)
-        } catch (error) {
-            this.toastError(error)
+        } catch (error: any) {
+            errorToast('ошибка обновления бота', getVerboseAxiosError(error))
             throw error
         }
     }
@@ -63,8 +49,8 @@ export class TelegramNotificationsService {
     async deleteBot(notificationName: string): Promise<void> {
         try {
             await api.delete("/notifications/telegram/" + notificationName)
-        } catch (error) {
-            this.toastError(error)
+        } catch (error: any) {
+            errorToast('Ошибка удаления бота', getVerboseAxiosError(error))
             throw error
         }
     }
@@ -76,8 +62,8 @@ export class TelegramNotificationsService {
         try {
             const response: AxiosResponse<TgNotification[]> = await api.get('/notifications/telegram');
             return response.data;
-        } catch (error) {
-            this.toastError(error);
+        } catch (error: any) {
+            errorToast('Ошибка получения списка оповещений', getVerboseAxiosError(error))
             throw error
         }
     }
@@ -88,8 +74,8 @@ export class TelegramNotificationsService {
                 "/notifications/telegram/" + notificationName + "/chats",
                 chat
             )
-        } catch (error) {
-            this.toastError(error)
+        } catch (error: any) {
+            errorToast('Ошибка добавления чата к боту', getVerboseAxiosError(error))
             throw error
         }
     }
@@ -100,8 +86,8 @@ export class TelegramNotificationsService {
                 "/notifications/telegram/" + notificationName + "/chats/" + chat.id,
                 chat
             )
-        } catch (error) {
-            this.toastError(error)
+        } catch (error: any) {
+            errorToast('Ошибка обновления чата бота', getVerboseAxiosError(error))
             throw error
         }
     }
@@ -109,19 +95,25 @@ export class TelegramNotificationsService {
     async deleteChat(notificationName: string, chatID: number): Promise<void> {
         try {
             await api.delete("/notifications/telegram/" + notificationName + "/chats/" + chatID)
-        } catch (error) {
-            this.toastError(error)
+        } catch (error: any) {
+            errorToast('Ошибка удаления чата бота', getVerboseAxiosError(error))
             throw error
         }
     }
 
     async sendTestMessage(notificationName: string, chatID: number): Promise<AxiosResponse<any, any>> {
+        const url = "/notifications/telegram/" + notificationName + "/chats/" + chatID + "/testMessage"
         try {
-            return await api.post("/notifications/telegram/" + notificationName + "/chats/" + chatID + "/testMessage")
-        } catch (error) {
-            this.toastError(error)
-            throw error
+            const resp = await api.post(url);
+            successToast('Тестовое сообщение отправлено', "Проверьте чат", 5000);
+            return resp;
+        } catch (error: any) {
+            errorToast('Ошибка отправки тестового сообщения', getVerboseAxiosError(error));
+            throw error;
         }
     }
 
 }
+
+const telegramNotificationService = new TelegramNotificationsService();
+export default telegramNotificationService;

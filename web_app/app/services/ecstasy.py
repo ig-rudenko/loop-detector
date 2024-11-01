@@ -27,7 +27,7 @@ class _EcstasyApi:
     async def get_myself(self, token: str) -> UserSchema:
         async with aiohttp.ClientSession(base_url=settings.ecstasy_url) as session:
             async with session.get(
-                    "/api/accounts/myself", headers={"Authorization": f"Bearer {token}"}
+                "/api/accounts/myself", headers={"Authorization": f"Bearer {token}"}
             ) as response:
                 data = await self._get_json_data(response)
                 return UserSchema(**data)
@@ -35,7 +35,7 @@ class _EcstasyApi:
     async def get_myself_permissions(self, token: str) -> list[str]:
         async with aiohttp.ClientSession(base_url=settings.ecstasy_url) as session:
             async with session.get(
-                    "/api/accounts/myself/permissions", headers={"Authorization": f"Bearer {token}"}
+                "/api/accounts/myself/permissions", headers={"Authorization": f"Bearer {token}"}
             ) as response:
                 data = await self._get_json_data(response)
                 return data.get("permissions", [])
@@ -66,7 +66,7 @@ class _EcstasyApi:
             status=response.status,
             message=data.get("detail", response.reason),
             history=response.history,
-            request_info=response.request_info
+            request_info=response.request_info,
         )
 
 

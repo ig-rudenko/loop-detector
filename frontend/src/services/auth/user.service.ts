@@ -1,4 +1,10 @@
-import {User} from "@/services/user";
+import {createNewUser, User} from "@/services/user";
+import api from "@/services/api";
+
+export async function getMyselfData(): Promise<User> {
+    const resp = await api.get("/auth/myself")
+    return createNewUser(resp.data)
+}
 
 class UserService {
     getUser(): User | null {

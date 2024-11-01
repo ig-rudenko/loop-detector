@@ -1,8 +1,7 @@
-import AuthService from '@/services/auth.service.js';
-import UserService from "@/services/user.service";
-import TokenService from "@/services/token.service";
-import {createNewUser, LoginUser, User, UserTokens} from "@/services/user";
-import api from "@/services/api";
+import AuthService from '@/services/auth/auth.service.ts';
+import {tokenService} from "@/services/auth/token.service.ts";
+import {LoginUser, User, UserTokens} from "@/services/user";
+import UserService, {getMyselfData} from "@/services/auth/user.service.ts";
 
 class Status {
     constructor(
@@ -22,7 +21,7 @@ const user = UserService.getUser()
 const initialState = new UserState(
     new Status(user !== null && user.username?.length > 0),
     user,
-    TokenService.getUserTokens(),
+    tokenService.getUserTokens(),
 )
 
 
@@ -33,9 +32,7 @@ export const auth = {
         login({ commit }: any, user: LoginUser) {
             return AuthService.login(user).then(
                 (data) => {
-                    if (data.status == 200) {
-                        commit('loginSuccess');
-                    }
+                    if (data.status == 200) commit('loginSuccess');
                     return Promise.resolve(data);
                 },
                 error => {
@@ -55,15 +52,13 @@ export const auth = {
     mutations: {
         loginSuccess(state: UserState) {
             state.status.loggedIn = true;
-            api.get("/auth/myself")
-                .then(
-                    resp => {
-                        const user = createNewUser(resp.data)
-                        UserService.setUser(user)
-                        state.user = user
-                        state.userTokens = TokenService.getUserTokens()
-                    }
-                )
+            getMyselfData().then(
+                user => {
+                    UserService.setUser(user)
+                    state.user = user
+                    state.userTokens = tokenService.getUserTokens()
+                }
+            )
         },
         loginFailure(state: UserState) {
             state.status.loggedIn = false;

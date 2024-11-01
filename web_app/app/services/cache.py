@@ -49,7 +49,7 @@ class InMemoryCache(AbstractCache):
         self._cache: dict[str, _ValueType] = {}
 
     async def get(self, key: str) -> Optional[Any]:
-        logger.debug(f"Get from cache %s", key)
+        logger.debug("Get from cache %s", key)
 
         if value := self._cache.get(key, None):
             if value["expires"] > datetime.now():
@@ -59,7 +59,7 @@ class InMemoryCache(AbstractCache):
         return None
 
     async def set(self, key: str, value: Any, timeout: int) -> None:
-        logger.debug(f"Set to cache %s", key)
+        logger.debug("Set to cache %s", key)
 
         self._cache[key] = {
             "data": pickle.dumps(value),
@@ -67,11 +67,11 @@ class InMemoryCache(AbstractCache):
         }
 
     async def delete(self, key: str) -> None:
-        logger.debug(f"Delete_ from cache %s", key)
+        logger.debug("Delete_ from cache %s", key)
         self._cache.pop(key, None)
 
     async def delete_namespace(self, prefix: str) -> None:
-        logger.debug(f"Delete namespace from cache %s", prefix)
+        logger.debug("Delete namespace from cache %s", prefix)
         for key in list(self._cache.keys()):
             if key.startswith(prefix):
                 self._cache.pop(key, None)
@@ -92,7 +92,7 @@ class RedisCache(AbstractCache):
         )
 
     async def get(self, key: str) -> Optional[Any]:
-        logger.debug(f"Get from cache %s", key)
+        logger.debug("Get from cache %s", key)
 
         value = await self._redis.get(key)
         if value is not None:
@@ -100,12 +100,12 @@ class RedisCache(AbstractCache):
         return None
 
     async def set(self, key: str, value: Any, expire: int) -> None:
-        logger.debug(f"Set to cache %s", key)
+        logger.debug("Set to cache %s", key)
 
         await self._redis.set(key, pickle.dumps(value), ex=expire)
 
     async def delete(self, key: str) -> None:
-        logger.debug(f"Delete_ from cache %s", key)
+        logger.debug("Delete_ from cache %s", key)
         await self._redis.delete(key)
 
     async def clear(self) -> None:
@@ -113,7 +113,7 @@ class RedisCache(AbstractCache):
         await self._redis.flushdb(asynchronous=True)
 
     async def delete_namespace(self, prefix: str) -> None:
-        logger.debug(f"Delete namespace from cache %s", prefix)
+        logger.debug("Delete namespace from cache %s", prefix)
         async for key in self._redis.scan_iter(f"{prefix}*"):
             await self._redis.delete(key)
 

@@ -36,16 +36,13 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, PropType} from 'vue';
-import {TelegramNotificationsService} from "@/services/telegramNotifications";
+import {defineComponent} from 'vue';
 import Textarea from "primevue/textarea";
+import telegramNotificationService from "@/services/telegramNotifications";
 
 export default defineComponent({
   name: "AddNewTelegramNotification",
   components: {Textarea},
-  props: {
-    notificationService: {required: true, type: Object as PropType<TelegramNotificationsService>}
-  },
   emits: ["created"],
   data() {
     return {
@@ -64,7 +61,7 @@ export default defineComponent({
       this.description = ""
     },
     create() {
-      this.notificationService.addBot(this.name, this.token, this.description).then(
+      telegramNotificationService.addBot(this.name, this.token, this.description).then(
           () => {
             this.$emit("created");
             this.showForm = false;

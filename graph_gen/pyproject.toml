@@ -13,16 +13,15 @@ redis = "^5.0.4"
 pydantic-settings = "^2.2.1"
 loguru = "^0.7.2"
 jq = "^1.8.0"
-
+pyvis = "^0.3.2"
 
 [tool.poetry.group.dev.dependencies]
-pyvis = "^0.3.2"
 black = {extras = ["d"], version = "^24.4.2"}
 
-
-[tool.poetry.group.mypy.dependencies]
+[tool.poetry.group.checks.dependencies]
 mypy = "^1.13.0"
 types-requests = "^2.32.0.20241016"
+ruff = "^0.7.1"
 
 [build-system]
 requires = ["poetry-core"]

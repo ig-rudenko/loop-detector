@@ -1,27 +1,25 @@
 [tool.poetry]
-name = "web-app"
-version = "0.1.0"
-description = ""
+package-mode = false
 authors = ["ig-rudenko <ig.rudenko1@yandex.ru>"]
-readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.12"
-fastapi = "^0.111.0"
-uvicorn = "^0.30.1"
-pydantic-settings = "^2.3.3"
-aiohttp = "^3.9.5"
-redis = "^5.0.6"
+fastapi = "^0.115.3"
+uvicorn = "^0.32.0"
+pydantic-settings = "^2.6.0"
+aiohttp = "^3.10.10"
+redis = "^5.2.0"
 loguru = "^0.7.2"
 requests = "^2.32.3"
+aiofiles = "^24.1.0"
 
 
 [tool.poetry.group.dev.dependencies]
 black = { extras = ["d"], version = "^24.4.2" }
 
-
-[tool.poetry.group.mypy.dependencies]
+[tool.poetry.group.checks.dependencies]
 mypy = "^1.13.0"
+ruff = "^0.7.1"
 
 [build-system]
 requires = ["poetry-core"]

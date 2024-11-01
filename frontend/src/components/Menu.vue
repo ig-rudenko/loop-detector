@@ -42,14 +42,24 @@ export default defineComponent({
 <template>
   <div class="flex py-1 my-1 justify-content-between align-items-start">
     <div class="gap-1 flex flex-wrap">
-      <Button icon="pi pi-home" @click="$router.push('/')" label="Главная" raised
-              :severity="currentURL=='/'?'contrast':'secondary'"></Button>
-      <Button icon="pi pi-spinner" @click="$router.push('/currentLoop')" label="Текущая" raised
-              :severity="currentURL=='/currentLoop'?'contrast':'secondary'"></Button>
+      <router-link to="/">
+        <Button icon="pi pi-home" label="Главная" raised
+                :severity="currentURL=='/'?'contrast':'secondary'" />
+      </router-link>
+      <router-link to="/loops/history">
+        <Button icon="pi pi-history" label="История" raised
+                :severity="currentURL=='/loops/history'?'contrast':'secondary'" />
+      </router-link>
+      <router-link to="/loops/current">
+        <Button icon="pi pi-spinner" label="Текущая" raised
+                :severity="currentURL=='/loops/current'?'contrast':'secondary'" />
+      </router-link>
       <Button v-if="user" @click="toggleUserDetail" icon="pi pi-user" :label="user.username" raised
               severity="secondary"/>
-      <Button v-if="user && user.isSuperuser" @click="$router.push('/notifications')" icon="pi pi-bell"
-              label="Оповещения" raised :severity="currentURL=='/notifications'?'contrast':'secondary'"/>
+      <router-link to="/notifications">
+        <Button v-if="user && user.isSuperuser" icon="pi pi-bell" label="Оповещения" raised
+                :severity="currentURL=='/notifications'?'contrast':'secondary'"/>
+      </router-link>
     </div>
 
     <OverlayPanel ref="userDetail">

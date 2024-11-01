@@ -25,18 +25,16 @@
 </template>
 
 <script lang="ts">
-import {defineComponent} from 'vue'
 import {mapState} from "vuex";
+import {defineComponent} from 'vue';
 
-import {GraphData, GraphService} from "@/services/graph";
-import Graph from "@/components/Graph.vue";
 import Menu from "@/components/Menu.vue";
-import FullMessagesTable from "@/components/FullMessagesTable.vue";
-import {DetailMessage} from "@/types.ts";
-import api from "@/services/api.ts";
-import {AxiosError} from "axios";
-import getVerboseAxiosError from "@/errorFmt.ts";
+import Graph from "@/components/Graph.vue";
 import MessagesInfo from "@/components/MessagesInfo.vue";
+import FullMessagesTable from "@/components/FullMessagesTable.vue";
+import {DetailMessage} from "@/types";
+import {GraphData, graphService} from "@/services/graph";
+import messagesService from "@/services/messages.service";
 
 export default defineComponent({
   name: "LoopGraph",
@@ -45,7 +43,6 @@ export default defineComponent({
   data() {
     return {
       graphData: null as GraphData | null,
-      graphService: new GraphService(this.$toast),
 
       visibleMessagesDialog: false,
       messages: [] as DetailMessage[],
@@ -74,30 +71,17 @@ export default defineComponent({
   },
 
   methods: {
-    getGraphData(): void {
-      this.graphService.getStoredGraph(this.storedGraphName).then(data => this.graphData = data);
+    getGraphData() {
+      graphService.getStoredGraph(this.storedGraphName).then(data => this.graphData = data);
     },
 
-    getMessages(): void {
-      api.get<DetailMessage[]>("/messages/stored/" + this.storedGraphName)
-          .then(value => {
-            this.messages = value.data
-          })
-          .catch((error: AxiosError) => this.toastError(error))
+    getMessages() {
+      messagesService.getGraphMessages(this.storedGraphName).then(value => this.messages = value)
     },
 
-    showMessagesDialog(): void {
+    showMessagesDialog() {
       this.visibleMessagesDialog = true
     },
-
-    toastError(error: AxiosError) {
-      this.$toast.add({
-        severity: 'error',
-        summary: 'Error',
-        detail: getVerboseAxiosError(error),
-        life: 5000
-      })
-    }
 
   }
 })

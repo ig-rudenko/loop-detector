@@ -1,3 +1,5 @@
+from fastapi import APIRouter, Depends, Response, HTTPException
+
 from app.schemas.auth import UserSchema
 from app.schemas.log_messages import LogMessageSchema
 from app.services.auth import get_current_user
@@ -7,7 +9,6 @@ from app.services.log_messages import (
     delete_current_log_messages,
     get_stored_log_messages,
 )
-from fastapi import APIRouter, Depends, Response, HTTPException
 
 router = APIRouter(prefix="/messages", tags=["messages"])
 
@@ -26,8 +27,8 @@ async def delete_messages(user: UserSchema = Depends(get_current_user)):
 
 
 @router.get("/stored/{name}", response_model=list[LogMessageSchema])
-def get_stored_messages(name: str, _: UserSchema = Depends(get_current_user)):
+async def get_stored_messages(name: str, _: UserSchema = Depends(get_current_user)):
     try:
-        return get_stored_log_messages(name)
+        return await get_stored_log_messages(name)
     except GraphStorage.GraphStorageException as exc:
         raise HTTPException(status_code=500, detail=str(exc))
