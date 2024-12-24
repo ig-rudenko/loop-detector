@@ -7,6 +7,7 @@ class _Config(BaseSettings):
     base_dir: Path = Path(__file__).parent.parent
     graph_storage: str = (base_dir / "graph_storage").absolute().as_posix()
     notifications_conf_file: str = (base_dir / "notifications.json").absolute().as_posix()
+    proxy: str | None = None
 
     log_level: str = "INFO"
     ecstasy_url: str

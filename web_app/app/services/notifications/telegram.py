@@ -1,6 +1,7 @@
 import aiohttp
 
 from app.schemas.tg_bot import TelegramBotInfo
+from app.settings import settings
 from . import exc
 
 
@@ -12,7 +13,10 @@ class TelegramBot:
 
     async def get_info(self) -> TelegramBotInfo:
         async with aiohttp.ClientSession() as session:
-            async with session.get(f"https://api.telegram.org/bot{self._token}/getMe") as resp:
+            async with session.get(
+                f"https://api.telegram.org/bot{self._token}/getMe",
+                proxy=settings.proxy,
+            ) as resp:
                 await self._check_resp_status(resp)
                 data = await resp.json()
                 info = TelegramBotInfo.model_validate(data["result"])
@@ -24,6 +28,7 @@ class TelegramBot:
             async with session.post(
                 f"https://api.telegram.org/bot{self._token}/sendMessage",
                 json={"chat_id": chat_id, "text": text},
+                proxy=settings.proxy,
             ) as resp:
                 await self._check_resp_status(resp)
                 return True
@@ -34,7 +39,8 @@ class TelegramBot:
 
         async with aiohttp.ClientSession() as session:
             async with session.get(
-                f"https://api.telegram.org/bot{self._token}/getUserProfilePhotos?user_id={self._info.id}"
+                f"https://api.telegram.org/bot{self._token}/getUserProfilePhotos?user_id={self._info.id}",
+                proxy=settings.proxy,
             ) as files_resp:
                 await self._check_resp_status(files_resp)
                 data = await files_resp.json()
@@ -49,7 +55,8 @@ class TelegramBot:
 
         async with aiohttp.ClientSession() as session:
             async with session.get(
-                f"https://api.telegram.org/file/bot{self._token}/{photo_path}"
+                f"https://api.telegram.org/file/bot{self._token}/{photo_path}",
+                proxy=settings.proxy,
             ) as photo_resp:
                 await self._check_resp_status(photo_resp)
                 photo_data = await photo_resp.read()
