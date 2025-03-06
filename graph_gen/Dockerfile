@@ -15,7 +15,7 @@ WORKDIR /app
 COPY pyproject.toml poetry.lock /app/
 
 RUN poetry config virtualenvs.create false && \
-    poetry install --only main --no-interaction --no-ansi --no-cache;
+    poetry install --only main --no-root --no-interaction --no-ansi --no-cache;
 
 
 FROM python:3.13.2-alpine
