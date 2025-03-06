@@ -61,10 +61,9 @@ if __name__ == "__main__":
 
     while True:
         logger.info("Запуск программы")
-        ecstasy = EcstasyAPI(
-            url=settings.ecstasy_url, username=settings.ecstasy_username, password=settings.ecstasy_password
-        )
+        ecstasy = EcstasyAPI(url=settings.ecstasy_url, api_key=settings.ecstasy_api_key)
         elastic = ElasticAPI(f"{settings.es_host}:{settings.es_port}", token=settings.es_token)
+
         thread = Thread(target=main, args=(ecstasy, elastic), name="loopd")
 
         try:

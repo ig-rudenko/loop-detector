@@ -20,8 +20,7 @@ class _Config(BaseSettings):
 
     # ECSTASY
     ecstasy_url: str
-    ecstasy_username: str
-    ecstasy_password: str
+    ecstasy_api_key: str
 
     # ElasticSearch
     es_host: str
