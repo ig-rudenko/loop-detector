@@ -4,6 +4,10 @@ WORKDIR /app
 
 COPY package.json .
 
+ARG proxy
+ENV HTTP_PROXY "$proxy"
+ENV HTTPS_PROXY "$proxy"
+
 RUN npm install;
 
 COPY . .
