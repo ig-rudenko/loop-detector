@@ -8,7 +8,7 @@ services:
     restart: on-failure
     hostname: nginx
     ports:
-      - "8001:80"
+      - "${BIND_HOST:-0.0.0.0}:${BIND_PORT:-8001}:80"
     volumes:
       # Настройки nginx
       - "./settings/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro"
