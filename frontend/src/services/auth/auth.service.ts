@@ -5,7 +5,7 @@ import axios from "axios";
 
 class AuthService {
     async login(user: LoginUser) {
-        let response = await axios.post("/api/auth/token", {
+        let response = await axios.post("/api/v1/auth/token", {
             username: user.username,
             password: user.password
         });
