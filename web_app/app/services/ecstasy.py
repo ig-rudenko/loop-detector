@@ -8,26 +8,26 @@ class _EcstasyApi:
 
     async def get_jwt(self, user_data: LoginSchema) -> TokenSchema:
         async with aiohttp.ClientSession(base_url=settings.ecstasy_url) as session:
-            async with session.post("/api/token", data=user_data.model_dump()) as response:
+            async with session.post("/api/token", data=user_data.model_dump(), proxy=None) as response:
                 data = await self._get_json_data(response)
                 return TokenSchema(**data)
 
     @staticmethod
     async def verify_jwt(token: str) -> bool:
         async with aiohttp.ClientSession(base_url=settings.ecstasy_url) as session:
-            async with session.post("/api/token/verify", data={"token": token}) as response:
+            async with session.post("/api/token/verify", data={"token": token}, proxy=None) as response:
                 return response.status == 200
 
     async def refresh_jwt(self, refresh_token: str) -> TokenSchema:
         async with aiohttp.ClientSession(base_url=settings.ecstasy_url) as session:
-            async with session.post("/api/token/refresh", data={"refresh": refresh_token}) as response:
+            async with session.post("/api/token/refresh", data={"refresh": refresh_token}, proxy=None) as response:
                 data = await self._get_json_data(response)
                 return TokenSchema(**data)
 
     async def get_myself(self, token: str) -> UserSchema:
         async with aiohttp.ClientSession(base_url=settings.ecstasy_url) as session:
             async with session.get(
-                "/api/v1/accounts/myself", headers={"Authorization": f"Bearer {token}"}
+                    "/api/v1/accounts/myself", headers={"Authorization": f"Bearer {token}"}, proxy=None
             ) as response:
                 data = await self._get_json_data(response)
                 return UserSchema(**data)
@@ -35,7 +35,7 @@ class _EcstasyApi:
     async def get_myself_permissions(self, token: str) -> list[str]:
         async with aiohttp.ClientSession(base_url=settings.ecstasy_url) as session:
             async with session.get(
-                "/api/v1/accounts/myself/permissions", headers={"Authorization": f"Bearer {token}"}
+                    "/api/v1/accounts/myself/permissions", headers={"Authorization": f"Bearer {token}"}, proxy=None
             ) as response:
                 data = await self._get_json_data(response)
                 return data.get("permissions", [])
