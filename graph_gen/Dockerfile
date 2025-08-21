@@ -1,4 +1,4 @@
-FROM python:3.13.2-alpine AS builder
+FROM python:3.14.0rc2-alpine AS builder
 
 RUN apk update && apk add curl
 
@@ -18,7 +18,7 @@ RUN poetry config virtualenvs.create false && \
     poetry install --only main --no-root --no-interaction --no-ansi --no-cache;
 
 
-FROM python:3.13.2-alpine
+FROM python:3.14.0rc2-alpine
 LABEL authors="irudenko"
 
 ENV PYTHONUNBUFFERED=1
