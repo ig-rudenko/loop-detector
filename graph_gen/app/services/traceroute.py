@@ -1,20 +1,20 @@
 import re
 
-from app.services.ecstasy import EcstasyAPI
 from app.graph import Node, Graph, Edge, Interface
 from app.services.device import find_device_name
+from app.services.ecstasy import EcstasyAPI
 
 
 def find_target_ports(node: Node, graph: Graph, api: EcstasyAPI) -> None:
     for interface in node.interfaces:
-        next_device = find_device_name(interface["Description"])
+        next_device = find_device_name(interface["description"])
         if next_device and re.search(r"SSW\d+$", next_device):
             node.target_ports.append(
                 Interface(
-                    name=interface["Interface"],
-                    status=interface["Status"],
-                    desc=interface["Description"],
-                    vlans=interface["VLAN's"],
+                    name=interface["name"],
+                    status=interface["status"],
+                    desc=interface["description"],
+                    vlans=interface["vlans"],
                 )
             )
 
@@ -24,9 +24,9 @@ def get_back_port(node: Node, back_device_name: str, api: EcstasyAPI) -> str:
         node.interfaces = api.get_device_interfaces(node.name)
 
     for interface in node.interfaces:
-        next_device = find_device_name(interface["Description"])
+        next_device = find_device_name(interface["description"])
         if next_device == back_device_name:
-            return interface["Interface"]
+            return interface["name"]
     return ""
 
 

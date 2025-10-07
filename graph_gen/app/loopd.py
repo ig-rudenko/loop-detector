@@ -88,13 +88,13 @@ class GraphLoopBuilder:
             target_ports = []
             for port, port_data in node["ports"].items():
                 for interface in node["interfaces"]:
-                    if compare_interfaces(port, interface["Interface"]):
+                    if compare_interfaces(port, interface["name"]):
                         target_ports.append(
                             Interface(
                                 name=port,
-                                status=interface["Status"],
-                                desc=interface["Description"],
-                                vlans=interface["VLAN's"],
+                                status=interface["status"],
+                                desc=interface["description"],
+                                vlans=interface["vlans"],
                                 messages=port_data["messages"],
                             )
                         )
