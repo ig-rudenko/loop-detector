@@ -1,8 +1,8 @@
 import logging
 import pickle
-from abc import abstractmethod, ABC
+from abc import ABC, abstractmethod
 from datetime import datetime, timedelta
-from typing import Any, Optional, TypedDict
+from typing import Any, TypedDict
 
 from redis.client import Redis
 
@@ -16,7 +16,7 @@ class AbstractCache(ABC):
     """Абстрактный класс для реализации кеша данных."""
 
     @abstractmethod
-    def get(self, key: str) -> Optional[Any]:
+    def get(self, key: str) -> Any | None:
         """Получает значение из кеша по ключу."""
         pass
 
@@ -48,14 +48,13 @@ class InMemoryCache(AbstractCache):
     def __init__(self) -> None:
         self._cache: dict[str, _ValueType] = {}
 
-    def get(self, key: str) -> Optional[Any]:
+    def get(self, key: str) -> Any | None:
         logger.debug("Get from cache %s", key)
 
         if value := self._cache.get(key, None):
             if value["expires"] > datetime.now():
                 return pickle.loads(value["data"])
-            else:
-                self.delete(key)
+            self.delete(key)
         return None
 
     def set(self, key: str, value: Any, timeout: int) -> None:
@@ -81,7 +80,7 @@ class InMemoryCache(AbstractCache):
 class RedisCache(AbstractCache):
     """Кэш данных в Redis."""
 
-    def __init__(self, host: str, port: int, db: int, password: Optional[str] = None) -> None:
+    def __init__(self, host: str, port: int, db: int, password: str | None = None) -> None:
         self._redis: Redis = Redis(
             host=host,
             port=port,
@@ -91,7 +90,7 @@ class RedisCache(AbstractCache):
             socket_connect_timeout=2,
         )
 
-    def get(self, key: str) -> Optional[Any]:
+    def get(self, key: str) -> Any | None:
         logger.debug("Get from cache %s", key)
 
         value: Any = self._redis.get(key)
@@ -126,5 +125,4 @@ def get_cache() -> AbstractCache:
             db=settings.redis_db,
             password=settings.redis_password,
         )
-    else:
-        return InMemoryCache()
+    return InMemoryCache()

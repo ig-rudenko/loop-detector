@@ -1,8 +1,8 @@
 import time
-from typing import Callable
+from collections.abc import Callable
 from uuid import uuid4
 
-from fastapi import Response, Request, FastAPI
+from fastapi import FastAPI, Request, Response
 from starlette.middleware.base import BaseHTTPMiddleware
 
 
@@ -43,9 +43,7 @@ class LoggingMiddleware(BaseHTTPMiddleware):
             "X-API-REQUEST-ID": request_id  # X-API-REQUEST-ID maps each request-response to a unique ID
         }
 
-        response, response_dict = await self._log_response(
-            call_next, request, request_id
-        )
+        response, response_dict = await self._log_response(call_next, request, request_id)
         request_dict = await self._log_request(request)
         logging_dict["request"] = request_dict
         logging_dict["response"] = response_dict
@@ -113,9 +111,7 @@ class LoggingMiddleware(BaseHTTPMiddleware):
 
         return response, response_logging
 
-    async def _execute_request(
-        self, call_next: Callable, request: Request, request_id: str
-    ) -> Response:
+    async def _execute_request(self, call_next: Callable, request: Request, request_id: str) -> Response:
         """Executes the actual path function using call_next.
         It also injects "X-API-Request-ID" header to the response.
 
@@ -132,7 +128,5 @@ class LoggingMiddleware(BaseHTTPMiddleware):
             return response
 
         except Exception as e:
-            self._logger.exception(
-                {"path": request.url.path, "method": request.method, "reason": e}
-            )
+            self._logger.exception({"path": request.url.path, "method": request.method, "reason": e})
             raise e from None

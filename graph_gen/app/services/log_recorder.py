@@ -39,7 +39,9 @@ class LogsRecorder:
     def _save_to_file(self, records: list[Record]):
         if self.has_new_logs:
             settings.storage_path.mkdir(parents=True, exist_ok=True)
-            with (settings.storage_path / f"{self._loop_name}_messages.json").open(mode="w", encoding="utf-8") as file:
+            with (settings.storage_path / f"{self._loop_name}_messages.json").open(
+                mode="w", encoding="utf-8"
+            ) as file:
                 json.dump(records, file, indent=4)
             self._save_info_file(records, settings.storage_path)
 

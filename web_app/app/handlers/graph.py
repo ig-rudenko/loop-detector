@@ -1,13 +1,13 @@
-from fastapi import APIRouter, Query, HTTPException, Depends
+from fastapi import APIRouter, Depends, HTTPException, Query
 
 from app.schemas.auth import UserSchema
 from app.schemas.graph import GraphSchema
 from app.schemas.graph_info import PaginatedGraphsHistoryInfoSchema
 from app.schemas.graph_storage import GraphStorageFileSchema
 from app.services.auth import get_current_user
-from app.services.graph_info import get_stored_graphs_info, get_stored_graphs_history
+from app.services.graph_info import get_stored_graphs_history, get_stored_graphs_info
 from app.services.graph_storage import GraphStorage
-from app.services.loop_graph import get_current_loop, GraphException
+from app.services.loop_graph import GraphException, get_current_loop
 from app.settings import settings
 
 router = APIRouter(prefix="/graph", tags=["graph"])

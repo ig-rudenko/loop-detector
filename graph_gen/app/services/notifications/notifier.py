@@ -1,5 +1,5 @@
 import json
-from typing import Callable
+from collections.abc import Callable
 
 from loguru import logger
 from pydantic import ValidationError
@@ -7,9 +7,9 @@ from pydantic import ValidationError
 from app.graph import Node
 from app.services.log_parser import Record
 from app.services.notifications.telegram import (
-    TelegramNotificationSchema,
-    TelegramNotificationBuilder,
     TelegramNotification,
+    TelegramNotificationBuilder,
+    TelegramNotificationSchema,
 )
 from app.settings import settings
 

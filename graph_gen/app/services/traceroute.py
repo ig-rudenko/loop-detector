@@ -1,6 +1,6 @@
 import re
 
-from app.graph import Node, Graph, Edge, Interface
+from app.graph import Edge, Graph, Interface, Node
 from app.services.device import find_device_name
 from app.services.ecstasy import EcstasyAPI
 

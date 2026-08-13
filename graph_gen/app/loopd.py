@@ -1,8 +1,8 @@
-from app.graph import Interface, Node, Graph
+from app.graph import Graph, Interface, Node
 from app.interfaces import compare_interfaces
 from app.services.ecstasy import EcstasyAPI
 from app.services.elastic import ElasticAPI
-from app.services.log_parser import get_unique_ips, process_logs, Record
+from app.services.log_parser import Record, get_unique_ips, process_logs
 from app.services.traceroute import find_next_device
 
 

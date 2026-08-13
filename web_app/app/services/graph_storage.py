@@ -64,21 +64,21 @@ class GraphStorage:
         try:
             async with aiofiles.open(self._graph_storage_dir / f"{name}.json") as f:
                 return GraphSchema.model_validate_json(await f.read())
-        except (OSError, json.JSONDecodeError):
+        except OSError, json.JSONDecodeError:
             raise GraphStorage.GraphStorageException(f"Failed to load file {name}")
 
     async def get_storage_graph_info(self, name: str) -> GraphInfo:
         try:
             async with aiofiles.open(self._graph_storage_dir / f"{name}_info.json") as f:
                 return json.loads(await f.read())
-        except (OSError, json.JSONDecodeError):
+        except OSError, json.JSONDecodeError:
             raise GraphStorage.GraphStorageException(f"Failed to load file {name}_info.json")
 
     async def get_storage_messages(self, name: str) -> list[dict]:
         try:
             async with aiofiles.open(self._graph_storage_dir / f"{name}_messages.json") as f:
                 return json.loads(await f.read())
-        except (OSError, json.JSONDecodeError):
+        except OSError, json.JSONDecodeError:
             raise GraphStorage.GraphStorageException(f"Failed to load file {name}_messages.json")
 
     def delete_storage_graph(self, name: str):

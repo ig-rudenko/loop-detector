@@ -14,3 +14,44 @@ dependencies = [
     "requests>=2.34.2",
     "uvicorn>=0.52.2",
 ]
+
+[dependency-groups]
+dev = [
+    "black>=26.5.1",
+    "mypy>=2.3.0",
+    "ruff>=0.16.2",
+]
+
+[tool.uv]
+package = false
+
+[tool.ruff]
+line-length = 110
+
+[tool.ruff.lint]
+select = [
+    "A", # flake8-builtins
+    "B", # flake8-bugbear
+    "C", # mccabe
+    "E", # pycodestyle
+    "F", # Pyflakes
+    "I", # isort
+    "SIM", # flake8-simplify
+    "RET", # flake8-return
+    "RSE", # flake8-raise
+    "UP", # pyupgrade
+    "W", # pycodestyle
+]
+ignore = [
+    "C408", # Unnecessary collection call
+    "C901", # Functions with a high complexity
+    "E402", # Module level import not at top of file
+    "E501", # Line too long
+    "SIM108", # Use ternary operator instead of `if`-`else`-block
+    "W291", # Trailing whitespace
+    "W293", # Blank line contains whitespace
+]
+
+[tool.black]
+line-length = 110
+target-version = ["py314"]

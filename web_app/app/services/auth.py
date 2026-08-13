@@ -3,6 +3,7 @@ from fastapi import Depends, HTTPException
 from fastapi.security import OAuth2PasswordBearer
 
 from app.schemas.auth import UserSchema
+
 from .ecstasy import ecstasy_api
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/auth/token")

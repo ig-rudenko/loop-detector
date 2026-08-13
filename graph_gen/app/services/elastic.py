@@ -1,6 +1,7 @@
 import json
 
 import requests
+
 from app.settings import settings
 
 
@@ -21,7 +22,9 @@ class ElasticAPI:
     @staticmethod
     def _load_match_patterns():
         if not settings.es_matches_file_path.exists():
-            raise FileNotFoundError(f"Файл с выражениями поиска не найден: ({settings.records_patterns_file_path})")
+            raise FileNotFoundError(
+                f"Файл с выражениями поиска не найден: ({settings.records_patterns_file_path})"
+            )
         with settings.es_matches_file_path.open("r") as file:
             return json.load(file)
 
@@ -53,9 +56,7 @@ class ElasticAPI:
                                 }
                             }
                         },
-                        {
-                            "bool": self._match_patterns
-                        },
+                        {"bool": self._match_patterns},
                     ]
                 }
             },

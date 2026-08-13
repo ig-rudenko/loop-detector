@@ -1,8 +1,8 @@
 from app.schemas.graph_info import (
     GraphInfoSchema,
-    VlanInfoSchema,
     GraphsHistoryInfoSchema,
     PaginatedGraphsHistoryInfoSchema,
+    VlanInfoSchema,
 )
 from app.schemas.graph_storage import GraphStorageFileSchema
 from app.services.cache import get_cache

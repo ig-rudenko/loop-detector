@@ -1,9 +1,10 @@
 import logging
 import pickle
-from abc import abstractmethod, ABC
+from abc import ABC, abstractmethod
+from collections.abc import Callable
 from datetime import datetime, timedelta
 from functools import wraps
-from typing import Any, Optional, TypedDict, Callable
+from typing import Any, TypedDict
 
 from redis.asyncio import Redis
 
@@ -17,7 +18,7 @@ class AbstractCache(ABC):
     """Абстрактный класс для реализации кеша данных."""
 
     @abstractmethod
-    async def get(self, key: str) -> Optional[Any]:
+    async def get(self, key: str) -> Any | None:
         """Получает значение из кеша по ключу."""
         pass
 
@@ -49,14 +50,13 @@ class InMemoryCache(AbstractCache):
     def __init__(self) -> None:
         self._cache: dict[str, _ValueType] = {}
 
-    async def get(self, key: str) -> Optional[Any]:
+    async def get(self, key: str) -> Any | None:
         logger.debug("Get from cache %s", key)
 
         if value := self._cache.get(key, None):
             if value["expires"] > datetime.now():
                 return pickle.loads(value["data"])
-            else:
-                await self.delete(key)
+            await self.delete(key)
         return None
 
     async def set(self, key: str, value: Any, timeout: int) -> None:
@@ -82,7 +82,7 @@ class InMemoryCache(AbstractCache):
 class RedisCache(AbstractCache):
     """Кэш данных в Redis."""
 
-    def __init__(self, host: str, port: int, db: int, password: Optional[str] = None) -> None:
+    def __init__(self, host: str, port: int, db: int, password: str | None = None) -> None:
         self._redis: Redis = Redis(
             host=host,
             port=port,
@@ -92,7 +92,7 @@ class RedisCache(AbstractCache):
             socket_connect_timeout=2,
         )
 
-    async def get(self, key: str) -> Optional[Any]:
+    async def get(self, key: str) -> Any | None:
         logger.debug("Get from cache %s", key)
 
         value = await self._redis.get(key)
@@ -128,14 +128,13 @@ def get_cache() -> AbstractCache:
             db=settings.redis_db,
             password=settings.redis_password,
         )
-    else:
-        return InMemoryCache()
+    return InMemoryCache()
 
 
 def cached(
     timeout: int,
-    key: Optional[str] = None,
-    variable_positions: Optional[list[int]] = None,
+    key: str | None = None,
+    variable_positions: list[int] | None = None,
     delimiter: str = ":",
 ) -> Callable[..., Any]:
     """

@@ -1,45 +1,88 @@
+import socket
+
 import aiohttp
 
-from app.schemas.auth import TokenSchema, LoginSchema, UserSchema
+from app.schemas.auth import LoginSchema, TokenSchema, UserSchema
 from app.settings import settings
 
 
 class _EcstasyApi:
+    def __init__(self):
+        self._connector = aiohttp.TCPConnector(family=socket.AF_INET)
+        self._timeout = aiohttp.ClientTimeout(total=60)
+        self._trust_env = True
 
     async def get_jwt(self, user_data: LoginSchema) -> TokenSchema:
-        async with aiohttp.ClientSession(base_url=settings.ecstasy_url) as session:
-            async with session.post("/api/token", data=user_data.model_dump(), proxy=None) as response:
-                data = await self._get_json_data(response)
-                return TokenSchema(**data)
+        async with (
+            aiohttp.ClientSession(
+                connector=self._connector,
+                timeout=self._timeout,
+                trust_env=self._trust_env,
+                base_url=settings.ecstasy_url,
+            ) as session,
+            session.post("/api/token", data=user_data.model_dump(), proxy=None) as response,
+        ):
+            data = await self._get_json_data(response)
+            return TokenSchema(**data)
 
-    @staticmethod
-    async def verify_jwt(token: str) -> bool:
-        async with aiohttp.ClientSession(base_url=settings.ecstasy_url) as session:
-            async with session.post("/api/token/verify", data={"token": token}, proxy=None) as response:
-                return response.status == 200
+    async def verify_jwt(self, token: str) -> bool:
+        async with (
+            aiohttp.ClientSession(
+                connector=self._connector,
+                timeout=self._timeout,
+                trust_env=self._trust_env,
+                base_url=settings.ecstasy_url,
+            ) as session,
+            session.post("/api/token/verify", data={"token": token}, proxy=None) as response,
+        ):
+            return response.status == 200
 
     async def refresh_jwt(self, refresh_token: str) -> TokenSchema:
-        async with aiohttp.ClientSession(base_url=settings.ecstasy_url) as session:
-            async with session.post("/api/token/refresh", data={"refresh": refresh_token}, proxy=None) as response:
-                data = await self._get_json_data(response)
-                return TokenSchema(**data)
+        async with (
+            aiohttp.ClientSession(
+                connector=self._connector,
+                timeout=self._timeout,
+                trust_env=self._trust_env,
+                base_url=settings.ecstasy_url,
+            ) as session,
+            session.post("/api/token/refresh", data={"refresh": refresh_token}, proxy=None) as response,
+        ):
+            data = await self._get_json_data(response)
+            return TokenSchema(**data)
 
     async def get_myself(self, token: str) -> UserSchema:
-        async with aiohttp.ClientSession(base_url=settings.ecstasy_url) as session:
-            async with session.get(
-                    "/api/v1/accounts/myself", headers={"Authorization": f"Bearer {token}"}, proxy=None
-            ) as response:
-                data = await self._get_json_data(response)
-                return UserSchema(**data)
+        async with (
+            aiohttp.ClientSession(
+                connector=self._connector,
+                timeout=self._timeout,
+                trust_env=self._trust_env,
+                base_url=settings.ecstasy_url,
+            ) as session,
+            session.get(
+                "/api/v1/accounts/myself",
+                headers={"Authorization": f"Bearer {token}"},
+                proxy=None,
+            ) as response,
+        ):
+            data = await self._get_json_data(response)
+            return UserSchema(**data)
 
     async def get_myself_permissions(self, token: str) -> list[str]:
-        async with aiohttp.ClientSession(base_url=settings.ecstasy_url) as session:
-            async with session.get(
-                    "/api/v1/accounts/myself/permissions", headers={"Authorization": f"Bearer {token}"}, proxy=None
-            ) as response:
-                data = await self._get_json_data(response)
-                print(data)
-                return data.get("permissions", [])
+        async with (
+            aiohttp.ClientSession(
+                connector=self._connector,
+                timeout=self._timeout,
+                trust_env=self._trust_env,
+                base_url=settings.ecstasy_url,
+            ) as session,
+            session.get(
+                "/api/v1/accounts/myself/permissions",
+                headers={"Authorization": f"Bearer {token}"},
+                proxy=None,
+            ) as response,
+        ):
+            data = await self._get_json_data(response)
+            return data.get("permissions", [])
 
     async def _get_json_data(self, response: aiohttp.ClientResponse) -> dict:
         await self._raise_for_status(response)

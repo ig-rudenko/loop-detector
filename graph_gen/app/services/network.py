@@ -1,5 +1,6 @@
-from app.graph import Graph, Node
 from pyvis.network import Network
+
+from app.graph import Graph, Node
 
 multiplier = 1
 

@@ -138,9 +138,9 @@ class NotificationsConfig:
 
     def _load_config(self):
         try:
-            with open(self._config_file_path, "r", encoding="utf-8", errors="ignore") as file:
+            with open(self._config_file_path, encoding="utf-8", errors="ignore") as file:
                 return _NotificationConfig.model_validate_json(file.read())
-        except (FileNotFoundError, PermissionError, ValidationError):
+        except FileNotFoundError, PermissionError, ValidationError:
             return _NotificationConfig()
 
     def _save_config(self):

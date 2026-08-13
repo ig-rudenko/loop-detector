@@ -1,17 +1,21 @@
 import json
 import re
+from collections.abc import Generator
 from datetime import datetime
-from typing import TypedDict, Generator
+from typing import TypedDict
 
 import jq
+
 from app.settings import settings
 
-Host = TypedDict("Host", {"ip": str})
+
+class Host(TypedDict):
+    ip: str
 Record = TypedDict("Record", {"@timestamp": str, "message": str, "host": Host})
 
 
 def get_loop_data_from_file(filename: str) -> dict:
-    with open(filename, "r") as f:
+    with open(filename) as f:
         data = json.load(f)
     return data
 
@@ -51,8 +55,8 @@ def get_unique_vlans(records: list[Record]) -> dict[int, int]:
 
 
 def process_logs(
-        records: list[Record],
-) -> Generator[tuple[str, str, str, datetime], None, None]:
+    records: list[Record],
+) -> Generator[tuple[str, str, str, datetime]]:
     for record in records:
         device_ip: str = record["host"]["ip"]
         device_port = get_port(record)
