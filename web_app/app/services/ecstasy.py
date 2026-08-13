@@ -8,14 +8,13 @@ from app.settings import settings
 
 class _EcstasyApi:
     def __init__(self):
-        self._connector = aiohttp.TCPConnector(family=socket.AF_INET)
         self._timeout = aiohttp.ClientTimeout(total=60)
         self._trust_env = True
 
     async def get_jwt(self, user_data: LoginSchema) -> TokenSchema:
         async with (
             aiohttp.ClientSession(
-                connector=self._connector,
+                connector=aiohttp.TCPConnector(family=socket.AF_INET),
                 timeout=self._timeout,
                 trust_env=self._trust_env,
                 base_url=settings.ecstasy_url,
@@ -28,7 +27,7 @@ class _EcstasyApi:
     async def verify_jwt(self, token: str) -> bool:
         async with (
             aiohttp.ClientSession(
-                connector=self._connector,
+                connector=aiohttp.TCPConnector(family=socket.AF_INET),
                 timeout=self._timeout,
                 trust_env=self._trust_env,
                 base_url=settings.ecstasy_url,
@@ -40,7 +39,7 @@ class _EcstasyApi:
     async def refresh_jwt(self, refresh_token: str) -> TokenSchema:
         async with (
             aiohttp.ClientSession(
-                connector=self._connector,
+                connector=aiohttp.TCPConnector(family=socket.AF_INET),
                 timeout=self._timeout,
                 trust_env=self._trust_env,
                 base_url=settings.ecstasy_url,
@@ -53,7 +52,7 @@ class _EcstasyApi:
     async def get_myself(self, token: str) -> UserSchema:
         async with (
             aiohttp.ClientSession(
-                connector=self._connector,
+                connector=aiohttp.TCPConnector(family=socket.AF_INET),
                 timeout=self._timeout,
                 trust_env=self._trust_env,
                 base_url=settings.ecstasy_url,
@@ -70,7 +69,7 @@ class _EcstasyApi:
     async def get_myself_permissions(self, token: str) -> list[str]:
         async with (
             aiohttp.ClientSession(
-                connector=self._connector,
+                connector=aiohttp.TCPConnector(family=socket.AF_INET),
                 timeout=self._timeout,
                 trust_env=self._trust_env,
                 base_url=settings.ecstasy_url,
