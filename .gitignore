@@ -3,7 +3,13 @@ examples
 logs
 lib
 
+.env
 .venv
 venv
 
 *.drawio.bkp
+/loop_storage/
+/graph_gen/storage/
+
+/es-matches.json
+/notifications.json

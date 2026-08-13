@@ -38,6 +38,7 @@ class _EcstasyApi:
                     "/api/v1/accounts/myself/permissions", headers={"Authorization": f"Bearer {token}"}, proxy=None
             ) as response:
                 data = await self._get_json_data(response)
+                print(data)
                 return data.get("permissions", [])
 
     async def _get_json_data(self, response: aiohttp.ClientResponse) -> dict:
